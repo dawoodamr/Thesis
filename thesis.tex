@@ -1,0 +1,462 @@
+\documentclass{sfuthesis}
+
+\title{More on kernel contraction in $\mathcal{EL}$}
+\thesistype{Dissertation}
+\author{Amr Dawood}
+\previousdegrees{%
+	B.Sc., German University in Cairo, 2011}
+\degree{Master of Science}
+\discipline{Computing Science}
+\department{Department of Computing Science}
+\faculty{Faculty of Applied Sciences}
+\copyrightyear{2015}
+\semester{Fall 2015}
+\date{1 September 2015}
+
+\keywords{Masters; Thesis; Simon Fraser University; Kernel Contraction; EL; Description Logic; Specificity; Localization}
+
+\committee{%
+	\chair{name}{Professor}
+	\member{James P. Delgrande}{Senior Supervisor\\Professor}
+	\member{David G. Mitchell}{Supervisor\\Associate Professor}
+}
+
+%   PACKAGES AND CUSTOMIZATIONS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Add any packages or custom commands you need for your thesis here.
+%   You don't need to call the following packages, which are already called in
+%   the sfuthesis class file:
+%
+%   - appendix
+%   - etoolbox
+%   - fontenc
+%   - geometry
+%   - lmodern
+%   - nowidow
+%   - setspace
+%   - tocloft
+%
+%   If you call one of the above packages (or one of their dependencies) with
+%   options, you may get a "Option clash" LaTeX error. If you get this error,
+%   you can fix it by removing your copy of \usepackage and passing the options
+%   you need by adding
+%
+%       \PassOptionsToPackage{<options>}{<package>}
+%
+%   before \documentclass{sfuthesis}.
+%
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+
+
+
+%   FRONTMATTER  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Title page, committee page, copyright declaration, abstract,
+%   dedication, acknowledgements, table of contents, etc.
+%
+
+\begin{document}
+
+\frontmatter
+\maketitle{}
+\makecommittee{}
+
+\begin{abstract}
+	This is a blank document from which you can start writing your thesis.
+\end{abstract}
+
+
+\begin{dedication} % optional
+\end{dedication}
+
+
+\begin{acknowledgements} % optional
+\end{acknowledgements}
+
+\addtoToC{Table of Contents}\tableofcontents\clearpage
+\addtoToC{List of Tables}\listoftables\clearpage
+\addtoToC{List of Figures}\listoffigures
+
+
+
+
+
+%   MAIN MATTER  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Start writing your thesis --- or start \include ing chapters --- here.
+%
+
+\mainmatter%
+
+\chapter{Introduction}
+
+Learning is one of the most intuitive functions of the human mind. It involves translating human's perception into knowledge, and adapting the state of mind according to that knowledge. Seeing the sunrise in the morning, one would intuitively change his mind and believe that it is not dark anymore; that would logically imply that one gives up the current belief that it is dawn time and replace it with a new belief that it is sunrise time. This is an example of belief revision. Revision is a kind of change in which the new belief (``it is sunrise") is conflicting with the current state of mind (believing that ``it is dawn"). 
+
+Learning can be thought of as the manipulation of beliefs according to perception. When humans perceive any change in their world, they change their knowledge accordingly. So changing the knowledge (or beliefs\footnote{Throughout this study we will be using the terms ``knowledge" and ``beliefs" interchangeably, although they are not exactly the same. Knowledge is usually assumed to be a special kind of beliefs. However, for convenience, when we use the word ``knowledge" we will be referring to ``belief." }) of an agent\footnote{The word ``agent" here means humans, computers, or any thing that has knowledge base and perception.} can be seen as the reality of learning. One example of belief change is \textbf{Revision}, which involves changing the knowledge base in order to add a conflicting belief. This can actually be broken down into two processes: changing the knowledge base to account for the conflict, and adding the new belief. 
+
+The first process involves removing the beliefs that caused that conflict. This process is called \textbf{Belief Contraction}. The second process involves adding the new belief and expanding the knowledge base accordingly. This process is called \textbf{Belief Expansion}. Contraction is the type of change we are mainly concerned with in this study. In the following chapter, we will discuss in some level of detail these types of change with more focus on contraction.
+
+The knowledge of an agent can be represented as a set of beliefs. An agent is assumed to believe in $A$ if $A$ is a member of its \textit{belief set}. In this study, the language used to represent belief sets is \textit{Description Logic}. Description Logic is a family of formalisms that are used to represent knowledge. They use concepts to represent classes of individuals and roles to represent relationships between them. They have different expressive powers and different reasoning mechanism with different complexities. They vary according to the set of logical operators they use. Here we use $\mathcal{EL}$, which is a member of the Description Logic family.
+
+We start the study by discussing the basic types of belief change, but before that, we build a ground for them by defining the framework that was introduced by Gardenfors. We define epistemic states and attitudes that will help in understanding the mechanics of belief change. We then explain some postulates introduced in the AGM framework; those postulates are considered rationality rules for belief change operations. Then we discuss what description logic is, what logical operators are used and what it is composed of. In that discussion, we focus on the most relevant variation, which is $\mathcal{EL}$. And we explain the most important reasoning algorithm for $\mathcal{EL}$.
+
+
+\chapter{Background}
+\section{Belief change}
+\subsection{Epistemic states}
+\subsection{Epistemic attitudes}
+\subsection{Basic types of change}
+\subsection{AGM framework}
+\section{Description logic}
+\subsection{ABox}
+\subsection{TBox}
+\subsection{$\mathcal{EL}$ language}
+
+\chapter{Kernel contraction}
+Belief contraction is the process of removing beliefs from belief sets. It can either be done by selecting one  of the largest subsets of the belief set that do not logically imply the abandoned belief, or by breaking all the minimal sets that logically imply that belief. The latter approach is the one we are going to focus on in this study. We call such minimal sets \textit{kernels}. Kernels will be discussed in more details in the coming section. But we need to go over some definitions first.
+
+Consider the following set:
+\begin{center}
+$ \lbrace a, a \rightarrow b, b, c \rbrace $
+\end{center}
+To contract the set by $b$, it is not enough to remove $b$ from the set. If we do so, we get:
+\begin{center}
+$ \lbrace a, a \rightarrow b, c \rbrace $
+\end{center}
+which still implies $b$. We need to prevent the resulting set of beliefs from implying $b$. The minimal subset that implies $b$ is 
+\begin{center}
+$ \lbrace a, a \rightarrow b \rbrace $
+\end{center}
+We call it a $b$-kernel. Since the kernel is a minimal subset that implies $b$, removing only one element of that kernel is enough to make it not imply $b$. The only other $b$-kernel of the original set is $\lbrace b \rbrace$; we can only break this kernel by removing $b$. Breaking the other kernel can be done either by removing $a$, or by removing $a \rightarrow b$. So the two possible resulting belief sets after contraction are:
+\begin{center}
+$ \lbrace a, c \rbrace $ and $ \lbrace a \rightarrow b, c \rbrace $
+\end{center}
+This is how kernel contraction works. Every $b$-kernel is one way to infer $b$. To contract $b$ every kernel should be broken by removing at least one belief. 
+
+
+\section{What are kernels?}
+Kernel contraction was introduced by Hansson\cite{kernel} as a variant of an older approach called ``safe contraction"\cite{safe}. In both approaches, contracting a knowledge base \textbf{K} by $\alpha$ is done by discarding beliefs that contribute to make \textbf{K} imply $\alpha$. Beliefs that contribute to make \textbf{K} imply $\alpha$ are members of some $\alpha$-kernels of \textbf{K}, and all members of every $\alpha$-kernel contribute to make \textbf{K} imply $\alpha$. In the previous example, there were two $b$-kernels: $\lbrace b \rbrace$ and $\lbrace a, a \rightarrow b \rbrace$. We need to remove at least one element from each kernel to contract the original set by $b$. We refer to the set of $\alpha$-kernels of \textbf{K} by $\textbf{K} \perp \alpha$.
+\begin{defn}(Kernel Set)
+According to \cite{hansson}, for a belief set \textbf{K} and a belief $\alpha$, $\textbf{K} \perp \alpha$ is a set such that $X \in \textbf{K} \perp \alpha$ if and only if:
+\begin{enumerate}
+\item $X \subseteq \textbf{K}$,
+\item $X \vdash \alpha$, and
+\item if $Y \subset X$ then $Y \nvdash \alpha$.
+\end{enumerate}
+$\textbf{K} \perp \alpha$ is a kernel set that contains all $\alpha$-kernels of \textbf{K}.
+\end{defn}
+Kernels are the smallest subsets of the knowledge base that imply a specific belief. Therefore, in order to give up that belief, every one of those kernels needs to be incised. If those kernels are not ``minimal", there might contain some beliefs that do not contribute to make the kernel imply that specific belief. For example, if $\lbrace \alpha, \beta \rbrace$ is an $\alpha$-kernel, $\beta$ is a belief that does not contribute to make the kernel imply $\alpha$. In that case, removing $\beta$ only would not help in giving up $\alpha$. 
+
+So, because of the minimality of the kernels, every belief in the kernel is significant to implying the belief that we want to give up ($\alpha$). And that's why removing one belief from a kernel is sufficient to make that kernel not imply $\alpha$. So, we use an incision function that cuts every kernel in the kernel set. When the incision function is given an $\alpha$-kernel set, it selects at least one element from each kernel to be removed. 
+
+The incision function is defined in \cite{hansson} as follows:
+\begin{defn}(Incision function)
+An incision function $\sigma$ is a function such that for all beliefs $\alpha$:
+\begin{enumerate}
+\item $\sigma (A \perp \alpha) \subseteq \bigcup (A \perp \alpha)$
+\item If $\phi \neq X \in A \perp \alpha$, then $X \cap \sigma (A \perp \alpha) \neq \phi$
+\end{enumerate}
+\end{defn}
+Contraction is done by removing the beliefs that are selected by the incision function from the original knowledge base. Contraction $\approx_\sigma$ using the incision function $\sigma$ can be defined as:\cite{hansson}
+\begin{defn} (Contraction)
+\begin{center}
+$A \approx_\sigma \alpha = A \smallsetminus \sigma (A \perp \alpha)$
+\end{center}
+\end{defn}
+
+
+\section{Computing kernels}
+Kernel contraction is about contracting knowledge bases using kernels. Kernels are the minimal subsets of the knowledge base that imply a certain consequence. The incision function can perform the contraction by cutting through all kernels of a specific belief. So, the first step in contraction is computing all kernels that imply the belief that needs to be removed. For that purpose, we use the pinpointing algorithm introduced in \cite{pin}.
+
+To show how the algorithm works, we use the example introduced in \cite{pin}. Given an $\mathcal{EL}$ TBox $T$ consisting of the following four GCI axioms:
+\begin{center}
+$T = \lbrace ax_1: A \sqsubseteq \exists{r}.A$, \hspace{7pt}  $ax_2: A \sqsubseteq Y$,  \hspace{7pt} $ax_3: \exists{r}.Y \sqsubseteq B$, \hspace{7pt} $ax_4: Y \sqsubseteq B \rbrace$,
+\end{center}
+we can see that $A \sqsubseteq B$ holds according to $T$, i.e. $A \sqsubseteq_T B$. Let: 
+\begin{center} 
+$\alpha = A \sqsubseteq B$.
+\end{center}
+According to the definition of kernel sets:
+\begin{center}
+$T \perp \alpha = \lbrace \lbrace ax_2, ax_4 \rbrace, \lbrace ax_1, ax_2, ax_3 \rbrace \rbrace$
+\end{center}
+The algorithm introduced in \cite{pin} computes all kernels using a modified version of the $\mathcal{EL}$ subsumption algorithm. It works by finding a monotone boolean formula called \textit{``pinpointing formula"}. The propositions of the pinpointing formula are GCIs of the TBox, and a propositional \textit{valuation} represents the kernels. In that sense, a valuation is a set of propositional variables that satisfy the formula, and these variables are the GCIs that constitute a kernel. So, by finding all valuations of the pinpointing formula we can get all kernels.
+
+In worst case, this approach takes exponential time (w.r.t the size of the TBox) to find all kernels. This is the case when there are exponentially many kernels. However, \cite{pin} also gives a polynomial-time algorithm that computes only one kernel. Because it is not part of the scope of this study, we are not going to discuss and analyze details of the pinpointing algorithm. All that matters is the worst-case time complexity, as it will affect the complexity of the kernel contraction algorithm that uses it.
+
+
+\section{Previous work}
+We use the pinpointing algorithm to get the set of all kernels. We then need to remove one element from each kernel to perform contraction. This is the role of the incision function; it picks an element from each kernel so that it cuts through all kernels.
+In this section, we look at some of the incision function implementations discussed in \cite{zwei}. The goal of this study is to continue the work done in \cite{zwei}, and to discuss some of what has already been done. 
+
+Given an $\mathcal{EL}$ TBox $T$ and a belief $\alpha$, ($T \perp \alpha$) is the set of $\alpha$-kernels. The main contraction algorithm look like the following:
+
+\begin{algorithm}
+\caption{Contraction algorithm}
+\label{MainAlgorithm}
+\begin{algorithmic}[1]
+\Procedure{contract}{T, A}
+\State kernelset = \Call{pinpoint}{T, A}
+\State giveUpSet = \Call{cut}{kernelset}
+\State T = T / giveUpSet
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+``kernelset" refers to ($T \perp \alpha$), and the \textit{giveUpSet} is the set of beliefs selected by the incision function (CUT) to be removed. The algorithm is straight forward. It works by generating the set of kernels using the pinpoint formula as discussed in the previous section. Then it calls the incision function that picks up beliefs from every kernel, ensuring that it cuts all kernels. The beliefs are then removed from the knowledge base, i.e. from the TBox.
+
+This general approach can be used with different incision functions. The call to the CUT function can be replaced with a call to another implementation of the incision function. The first implementation is the most straight-forward one, where it removes a random belief from every kernel. It looks like the following:
+
+\begin{algorithm}
+\caption{Random removal}
+\label{RandomAlgorithm}
+\begin{algorithmic}[1]
+\Function{RandomRemove}{kernelset}
+\State giveUpSet = $\lbrace \rbrace$
+\For{$kernel \in kernelset$} 
+\State choose a random belief $\alpha$ from $kernel$
+\State giveUpSet = giveUpSet $\cup$ $\alpha$
+\EndFor \State
+\Return giveUpSet
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+The time complexity of the RandomRemove function is polynomial: $O(m)$, where $m$ is the number of kernels (size of the kernelset, and assuming that the random selection takes constant time. However, this is clearly not a good algorithm. In this example:
+\begin{center}
+kernelset = $\lbrace \lbrace a, c \rbrace, \lbrace b, c \rbrace \rbrace$, 
+\end{center}
+one of the possible outcomes of the RandomRemove algorithm is:
+\begin{center}
+\textit{giveUpSet} = $\lbrace c, b \rbrace$
+\end{center}
+which unnecessarily removes $b$. This could happen when the algorithm selects $c$ from the first kernel and $b$ from the second kernel. This solution:
+\begin{center}
+\textit{giveUpSet} = $\lbrace c \rbrace$
+\end{center}
+seems more concise and removes less beliefs. And it could be done easily if the algorithm is smart enough to check if the second kernel has already been incised or not. 
+
+\section{Minimal change}
+According to information economy principal (minimality), in every change of the epistemic state loss of information should be minimum\cite{econ}. This means that a system should choose an epistemic change outcome that minimizes loss of information. To satisfy the requirement of the minimum change we need an algorithm that removes the least number of GCIs while hitting all the kernels; but the kernels are nothing but sets of beliefs (GCIs). Luckily, this is exactly the \textit{minimal hitting set problem}. The minimal hitting set problem can be defined as follows:
+\begin{defn}
+Given a set $S=\{s_{1}, s_{2}, ..., s_{n}\}$ of $n$ non-empty sets, a minimal hitting set $d$ is a set such that:
+\begin{center}
+$\forall_{s_{i} \in S} [ s_{i} \cap d \neq \emptyset] \wedge \nexists_{d' \subset d}[\forall_{s_{i} \in S} (s_{i} \cap d' \neq \emptyset) ]$\cite{hit}
+\end{center}
+\end{defn}
+
+In the context of kernel contraction in $\mathcal{EL}$, we can define the minimal hitting set contraction as:
+\begin{defn}(Minimal hitting set contraction)
+Given a kernelset $K=\{k_{1}, k_{2}, ..., k_{n}\}$ of $n$ kernels, a minimal hitting set $giveUpSet$ is a set such that:
+\begin{center}
+$\forall_{k_{i} \in K} [ k_{i} \cap giveUpSet \neq \emptyset] \wedge \nexists_{giveUpSet' \subset giveUpSet}[\forall_{k_{i} \in K} (k_{i} \cap giveUpSet' \neq \emptyset) ]$
+\end{center}
+\end{defn}
+
+And since kernels are subsets of the $TBox$, and our goal to find a $giveUpSet$ that hits all kernels, we can use approaches to the minimal hitting set problem to solve it. There are good approximation algorithms, such as the one introduced in \cite{hit}, for the minimal hitting set problem, that are feasible in terms of running time. 
+
+We can now use them to implement contraction for $TBox$, by implementing the minimal incision function that adopts one of them, to achieve minimum change (which we can call then, a minimal incision function). We are not going to implement such function in this study, but for now, we will assume that there is a function:
+\begin{verbatim}
+ min-hit-CUT(kernelSet)
+\end{verbatim}
+that takes a set of kernels, and returns a minimal hitting set of sentences to give up. We can use this function, as if it is implemented, and may implement it in some future work.
+
+
+\chapter{Heuristics to contraction}
+Considering algorithms that guarantee contraction with minimum change is not always enough for optimal contraction. Optimality in semantics is always important to consider. This means that if we have two possible \textit{giveUpSets} of the same size, one could be better than the other. So far, we have only implemented algorithms that compute the smallest \textit{giveUpSets} without looking at what is being removed. 
+
+
+
+\section{Localization}
+\section{Specificity}
+
+Sometimes we need some domain-specific and language-specific knowledge to decide which beliefs to give up -- if we have two equally minimum \textit{giveUpSets}. The subsumption hierarchy enforced by subsumption relation in $\mathcal{EL}$ somehow categorizes the beliefs (or GCIs) into different levels of generality and specificity. Consider the kernel in Figure \ref{fig:AnimalKernel},
+\begin{figure}
+\begin{center}
+$Lion \sqsubseteq Mammal$\\
+$Mammal \sqsubseteq Vertebrate$\\
+$Vertebrate \sqsubseteq Animal$
+\end{center}
+\caption{Simple Animal kernel}
+\label{fig:AnimalKernel}
+\end{figure}
+which implicitly entails
+\begin{center}
+$Lion \sqsubseteq Animal$
+\end{center}
+And suppose we would like to contract the $TBox$ by $Lion \sqsubseteq Animal$. We have three options: we can remove $Lion \sqsubseteq Mammal$, $Mammal \sqsubseteq Vertebrate$, or $Vertebrate \sqsubseteq Animal$. Removing any of the three GCIs would guarantee minimum change. However removing $Lion \sqsubseteq Mammal$ sounds much more reasonable than removing $Vertebrate \sqsubseteq Animal$; $Lion \sqsubseteq Mammal$ involves concepts that are more specific than the ones involved in $Vertebrate \sqsubseteq Animal$. Removing $Vertebrate \sqsubseteq Animal$ may affect more concepts in the subsumption hierarchy (in worst case) than those affected by removing $Lion \sqsubseteq Mammal$. 
+
+So, it is preferable to remove GCIs that involve specific concepts rather than removing GCIs that involve more general ones. To account for specificity, we can assign a label to each of the concepts representing its level (or weight) -- where levels increase with generality. And during contraction, we consider contracting GCIs that involve concepts at lower level before considering GCIs that involve concepts at higher level.
+
+The approach we follow in this study for adopting the preference of removing sentences that contain more specific concepts is by assigning weights to every GCI that reflects its generality, then we select the kernels with minimal overall weight. Every GCI gets a numeric weight depending on the level of generality of the concepts involved in it (depending on their position in the subsumption graph). A GCI $A \sqsubseteq B$ gets weight `0' if $A$ has no children, i.e. if there is no rule of the form $X \sqsubseteq A$, where $X$ is an arbitrary concept; and the GCI involving its parent will have weight `1' in that case. So the weight somehow represents the level in the subsumption graph, starting from level `0' at the trees' roots. For simplicity, we assume that the $TBox$ is acyclic -- so we avoid the problems that will be caused by loops.
+
+
+Similar to the hierarchy of the subsumption graph of an $\mathcal{EL}$ TBox, we give a definition to \textit{parent} and \textit{child} concepts as follows:
+\begin{defn}
+\label{defn:Parent-Child}
+For a GCI $A \sqsubseteq B$:
+\begin{itemize}
+\item $A$ is a \textit{child} concept, and
+\item $B$ is a \textit{parent} concept.\\
+\end{itemize}
+\end{defn}
+
+So by looking again at Figure \ref{fig:AnimalKernel}, we can now say that:
+\begin{itemize}
+\item Mammal is a \textit{parent} of Lion, and Lion is a \textit{child} of Mammal
+\item Vertebrate is a \textit{parent} of Mammal, and Mammal is a \textit{child} of Vertebrate
+\item Animal is a \textit{parent} of Vertebrate, and Vertebrate is a \textit{child} of Animal
+\item Animal is the most \textit{general} concept, i.e. Animal subsumes all other concepts
+\item Lion is the most \textit{specific} concept (least \textit{general}), i.e. it is subsumed by all other concepts
+\item $Lion \sqsubseteq Mammal$ has weight = `0'
+\item $Mammal \sqsubseteq Vertebrate$ has weight = `1'
+\item $Vertebrate \sqsubseteq Animal$ has weight = `2'
+\end{itemize}
+
+The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $T$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
+
+\begin{algorithm}
+\caption{Building the children graph}
+\label{GraphBuild}
+\begin{algorithmic}[1]
+\Function {graphBuild}{T}
+\State $children(X) = \emptyset$, for every concept X in T 
+\For{every $A \sqsubseteq B \in T$}
+\State $children(B) = children(B) \cup \{ A \}$
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now we have a graph composed of concepts and their $children$ relation; the nodes are concepts and the edges are the child-parent relationship between them. The roots are now concepts with no parents, and the leaves are concepts with no children. The GCIs involving leaves are assigned weight `0' and it increases by `1' every step towards the roots. So, the roots are most general concepts, and the leaves are most specific. If a GCI contains concepts $\alpha \sqsubseteq \beta$, where $\alpha$ has no parents and $\beta$ has no children, then it gets weight `0' according to Algorithm \ref{AssignWeights}.
+
+\begin{algorithm}
+\caption{Assigning Weights}
+\label{AssignWeights}
+\begin{algorithmic}[1]
+\Function {assignWeights}{T}
+\For{every $A \sqsubseteq B \in T$}
+\State $weight(A \sqsubseteq B) = GetWeight(A \sqsubseteq B)$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function {getWeight}{$X \sqsubseteq Y$}
+\If{$weight(X \sqsubseteq Y) \neq NULL$}
+\State
+\Return $weight(X \sqsubseteq Y)$
+\EndIf
+\If{$children(X) = \emptyset$}
+\State
+\Return 0
+\Else
+\State
+\Return $1 + GetMaxWeight(X)$
+\EndIf
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function {getMaxWeight}{X}
+\State max = -- 1
+\For{every Z in children(X)}
+\State w = GetWeight($Z \sqsubseteq X$)
+\If{ w $>$ max}
+\State max = w
+\EndIf
+\EndFor
+\State
+\Return max
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now we have every GCI in T assigned a weight relative to its level of generality. So, in every kernel we have a preference level of what to give up. Based on the weights, we will choose the sentences with less weight over the ones with more weight to remove. This preference can be used as a tie-breaker after we apply the minimal hitting set algorithm and end up with more than one minimal set. If we arrive at two minimal hitting sets for the kernels, we can compute the overall weight of each of the hitting sets and remove the sentences in the one with lower weight. This is shown in Algorithm \ref{RemoveSpecific}. It uses the min-hit-CUT algorithm that gets the minimum hitting sets given a kernel set. There could be more than one minimum hitting set.
+
+\begin{algorithm}
+\caption{Removing specific hitting set}
+\label{RemoveSpecific}
+\begin{algorithmic}[1]
+\Function {getMostSpecificHit}{kernelset}
+\State min-hit-sets = min-hit-CUT(kernelSet)
+\State $min = \infty$
+\State hit = NULL
+\State w(s) = 0, for every $s \in min-hit-sets$
+\For{every s in min-hit-sets}
+\For{every $A \sqsubseteq B$ in s}
+\State $w(s) = w(s) + weight(A \sqsubseteq B)$
+\EndFor
+\If{w(s) $<$ min}
+\State min = w(s)
+\State hit = s
+\EndIf
+\EndFor
+\State
+\Return hit
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now the CUT method in Algorithm \ref{MainAlgorithm} can be re implemented using the algorithms introduced here to account for specificity heuristics. Given a TBox $T$ and a GCI $A$, the contraction algorithm can look like Algorithm \ref{MainAlgorithmModified}.
+
+\begin{algorithm}
+\caption{Contraction algorithm -- modified}
+\label{MainAlgorithmModified}
+\begin{algorithmic}[1]
+\Procedure{contract}{T, A}
+\State kernelset = \Call{pinpoint}{T, A}
+\State graphBuild(T)
+\State assignWeights(T)
+\State giveUpSet = \Call{getMostSpecificHit}{kernelset}
+\State T = T / giveUpSet
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+The contraction algorithms in this version guarantees the minimality and specificity of the removed beliefs. It guarantees the minimality by reducing the selection of beliefs from the kernelset to the minimal hitting set problem. The better the performance and the optimality of the hitting set algorithms, the more minimal and efficient the contraction algorithm is. If the minimal set algorithm produces more than one solution of the same size, the specificity heuristic is used as a tie-breaker. It selects the solution with more specific beliefs to be removed.
+
+The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(nl)$, where $n$ is the size of the TBox $T$ and $l$ is the depth of the subsumption graph; it works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $T$. Finally, the $getMostSpecificHit$ function takes $O(nm)$ steps in the worst case, where $n$ is the size of the TBox $T$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
+
+
+
+
+
+\chapter{Conclusion}
+
+
+
+
+%   BACK MATTER  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   References and appendices. Appendices come after the bibliography and
+%   should be in the order that they are referred to in the text.
+%
+%   If you include figures, etc. in an appendix, be sure to use
+%
+%       \caption[]{...}
+%
+%   to make sure they are not listed in the List of Figures.
+%
+
+\backmatter%
+	\addtoToC{Bibliography}
+	\bibliographystyle{plain}
+	\bibliography{references}
+
+\begin{appendices} % optional
+	\chapter{Code}
+\end{appendices}
+\end{document}
