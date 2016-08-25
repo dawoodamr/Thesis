@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.13)  23 AUG 2016 21:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.13)  24 AUG 2016 13:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -471,8 +471,7 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 Document Style - pseudocode environments for use with the `algorithmicx' style
 )
 \c@thm=\count130
- (./thesis.aux (./introduction.aux) (./background.aux) (./contraction.aux)
-(./heuristics.aux))
+ (./thesis.aux (./introduction.aux) (./background.aux) (./heuristics.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
@@ -490,7 +489,8 @@ LaTeX Font Info:    ... okay on input line 70.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
 LaTeX Font Info:    ... okay on input line 70.
 LaTeX Font Info:    Try loading font information for T1+lmr on input line 70.
- (/usr/share/texmf/tex/latex/lm/t1lmr.fd
+
+(/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 *geometry* driver: auto-detecting
@@ -704,52 +704,47 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 
 
 ]
-\openout2 = `contraction.aux'.
-
- (./contraction.tex
 Chapter 3.
 [4
 
 
-
 ] [5]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 81.
+put line 191.
  [6] [7] [8]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 160.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 299.
 
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-Overfull \hbox (3.86201pt too wide) in paragraph at lines 163--164
+Overfull \hbox (3.86201pt too wide) in paragraph at lines 302--303
 \T1/lmr/m/n/10.95 that takes a set of ker-nels, and re-turns a min-i-mal hit-ti
 ng set (min-i-mal in both set-containment
  []
 
-[9]
-Overfull \hbox (16.69456pt too wide) in paragraph at lines 215--216
+[9] [10]
+Overfull \hbox (16.69456pt too wide) in paragraph at lines 354--355
 \OML/lmm/m/it/10.95 Mammal; Mammal \OMS/lmsy/m/n/10.95 v \OML/lmm/m/it/10.95 An
 imal\OMS/lmsy/m/n/10.95 g$\T1/lmr/m/n/10.95 , the new $\OML/lmm/m/it/10.95 T$ \
 T1/lmr/m/n/10.95 af-ter adding all sub-sump-tions would be $\OMS/lmsy/m/n/10.95
  f\OML/lmm/m/it/10.95 Human \OMS/lmsy/m/n/10.95 v
  []
 
-[10] [11] <example1.jpg, id=334, 484.81125pt x 602.25pt>
+[11] <example1.jpg, id=337, 484.81125pt x 602.25pt>
 File: example1.jpg Graphic file (type jpg)
  <use example1.jpg>
-Package pdftex.def Info: example1.jpg used on input line 259.
+Package pdftex.def Info: example1.jpg used on input line 398.
 (pdftex.def)             Requested size: 242.40503pt x 301.12425pt.
-
-[12 <./example1.jpg>]
+ [12]
+[13 <./example1.jpg>]
 LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 271.
- [13]) [14]
+(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 410.
+ [14] [15] [16]
 \openout2 = `heuristics.aux'.
 
  (./heuristics.tex
 Chapter 4.
-[15
-
+[17
 
 
 ]
@@ -757,36 +752,35 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--37
 
  []
 
-[16]) [17] [18] [19]
+[18]) [19] [20] [21]
 Chapter 5.
-[20
+[22
 
 
-] (./thesis.bbl) [21
+] (./thesis.bbl) [23
 
 
 ]
 Appendix A.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 143.
-[22
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 494.
+[24
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 143.
- (./thesis.aux (./introduction.aux) (./background.aux) (./contraction.aux)
-(./heuristics.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 143.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 143.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 494.
+ (./thesis.aux (./introduction.aux) (./background.aux) (./heuristics.aux))
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 494.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 494.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: 886CC2DA26B410C7C644F4B72A4E6B44;1795.
  ) 
 Here is how much of TeX's memory you used:
- 9502 strings out of 493029
- 139033 string characters out of 6136234
- 244435 words of memory out of 5000000
- 12713 multiletter control sequences out of 15000+600000
+ 9505 strings out of 493029
+ 139073 string characters out of 6136234
+ 243888 words of memory out of 5000000
+ 12720 multiletter control sequences out of 15000+600000
  101214 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,8n,41p,1146b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,8n,41p,1124b,443s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/s
 hare/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm
@@ -803,10 +797,10 @@ ri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/f
 onts/type1/public/lm/lmsy6.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pf
 b></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (31 pages, 374019 bytes).
+Output written on thesis.pdf (33 pages, 375918 bytes).
 PDF statistics:
- 499 PDF objects out of 1000 (max. 8388607)
- 441 compressed objects within 5 object streams
- 113 named destinations out of 1000 (max. 500000)
+ 512 PDF objects out of 1000 (max. 8388607)
+ 452 compressed objects within 5 object streams
+ 116 named destinations out of 1000 (max. 500000)
  254 words of extra memory for PDF output out of 10000 (max. 10000000)
 
