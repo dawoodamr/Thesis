@@ -97,6 +97,7 @@
 %
 %   Start writing your thesis --- or start \include ing chapters --- here.
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter%
 
@@ -108,159 +109,8 @@
 
 \include{contraction}
 
+
 \include{heuristics}
-
-
-
-\section{Specificity}
-
-The subsumption hierarchy enforced by subsumption relation in $\mathcal{EL}$ somehow categorizes beliefs (or GCIs) into different levels of generality and specificity. Consider the kernel:% in Figure %\ref{fig:AnimalKernel},
-%\begin{figure}
-\begin{center}
-$Lion \sqsubseteq Mammal$\\
-$Mammal \sqsubseteq Vertebrate$\\
-$Vertebrate \sqsubseteq Animal$
-\end{center}
-%\caption{Simple Animal kernel}
-%\label{fig:AnimalKernel}
-%\end{figure}
-which implicitly entails
-\begin{center}
-$Lion \sqsubseteq Animal$
-\end{center}
-And suppose we would like to contract the $TBox$ by $Lion \sqsubseteq Animal$. We have three options: we can remove $Lion \sqsubseteq Mammal$, $Mammal \sqsubseteq Vertebrate$, or $Vertebrate \sqsubseteq Animal$. Removing any of the three GCIs would guarantee minimum change. However removing $Lion \sqsubseteq Mammal$ sounds much more reasonable than removing $Vertebrate \sqsubseteq Animal$; $Lion \sqsubseteq Mammal$ involves concepts that are more specific than the ones involved in $Vertebrate \sqsubseteq Animal$. Removing $Vertebrate \sqsubseteq Animal$ may affect more concepts in the subsumption hierarchy (in worst case) than those affected by removing $Lion \sqsubseteq Mammal$. 
-
-So, it is preferable to remove GCIs that involve specific concepts rather than removing GCIs that involve more general ones. To account for specificity, we can assign a label to each of the concepts representing its level (or weight) -- where levels increase with generality. And during contraction, we consider contracting GCIs that involve concepts at lower level before considering GCIs that involve concepts at higher level.
-
-The approach we follow in this study for adopting the preference of removing sentences that contain more specific concepts is by assigning weights to every GCI that reflects its generality, then we select the kernels with minimal overall weight. Every GCI gets a numeric weight depending on the level of generality of the concepts involved in it (depending on their position in the subsumption graph). A GCI $A \sqsubseteq B$ gets weight `0' if $A$ has no children, i.e. if there is no rule of the form $X \sqsubseteq A$, where $X$ is an arbitrary concept; and the GCI involving its parent will have weight `1' in that case. So the weight somehow represents the level in the subsumption graph, starting from level `0' at the trees' roots. For simplicity, we assume that the $TBox$ is acyclic -- so we avoid the problems that will be caused by loops.
-
-
-Similar to the hierarchy of the subsumption graph of an $\mathcal{EL}$ TBox, we give a definition to \textit{parent} and \textit{child} concepts as follows:
-\begin{defn}
-\label{defn:Parent-Child}
-For a GCI $A \sqsubseteq B$:
-\begin{itemize}
-\item $A$ is a \textit{child} concept, and
-\item $B$ is a \textit{parent} concept.\\
-\end{itemize}
-\end{defn}
-
-So by looking again at Figure \ref{fig:AnimalKernel}, we can now say that:
-\begin{itemize}
-\item Mammal is a \textit{parent} of Lion, and Lion is a \textit{child} of Mammal
-\item Vertebrate is a \textit{parent} of Mammal, and Mammal is a \textit{child} of Vertebrate
-\item Animal is a \textit{parent} of Vertebrate, and Vertebrate is a \textit{child} of Animal
-\item Animal is the most \textit{general} concept, i.e. Animal subsumes all other concepts
-\item Lion is the most \textit{specific} concept (least \textit{general}), i.e. it is subsumed by all other concepts
-\item $Lion \sqsubseteq Mammal$ has weight = `0'
-\item $Mammal \sqsubseteq Vertebrate$ has weight = `1'
-\item $Vertebrate \sqsubseteq Animal$ has weight = `2'
-\end{itemize}
-
-The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $T$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
-
-\begin{algorithm}
-\caption{Building the children graph}
-\label{GraphBuild}
-\begin{algorithmic}[1]
-\Function {graphBuild}{T}
-\State $children(X) = \emptyset$, for every concept X in T 
-\For{every $A \sqsubseteq B \in T$}
-\State $children(B) = children(B) \cup \{ A \}$
-\EndFor
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Now we have a graph composed of concepts and their $children$ relation; the nodes are concepts and the edges are the child-parent relationship between them. The roots are now concepts with no parents, and the leaves are concepts with no children. The GCIs involving leaves are assigned weight `0' and it increases by `1' every step towards the roots. So, the roots are most general concepts, and the leaves are most specific. If a GCI contains concepts $\alpha \sqsubseteq \beta$, where $\alpha$ has no parents and $\beta$ has no children, then it gets weight `0' according to Algorithm \ref{AssignWeights}.
-
-\begin{algorithm}
-\caption{Assigning Weights}
-\label{AssignWeights}
-\begin{algorithmic}[1]
-\Function {assignWeights}{T}
-\For{every $A \sqsubseteq B \in T$}
-\State $weight(A \sqsubseteq B) = GetWeight(A \sqsubseteq B)$
-\EndFor
-\EndFunction
-\end{algorithmic}
-
-\begin{algorithmic}[1]
-\Function {getWeight}{$X \sqsubseteq Y$}
-\If{$weight(X \sqsubseteq Y) \neq NULL$}
-\State
-\Return $weight(X \sqsubseteq Y)$
-\EndIf
-\If{$children(X) = \emptyset$}
-\State
-\Return 0
-\Else
-\State
-\Return $1 + GetMaxWeight(X)$
-\EndIf
-\EndFunction
-\end{algorithmic}
-
-\begin{algorithmic}[1]
-\Function {getMaxWeight}{X}
-\State max = -- 1
-\For{every Z in children(X)}
-\State w = GetWeight($Z \sqsubseteq X$)
-\If{ w $>$ max}
-\State max = w
-\EndIf
-\EndFor
-\State
-\Return max
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Now we have every GCI in T assigned a weight relative to its level of generality. So, in every kernel we have a preference level of what to give up. Based on the weights, we will choose the sentences with less weight over the ones with more weight to remove. This preference can be used as a tie-breaker after we apply the minimal hitting set algorithm and end up with more than one minimal set. If we arrive at two minimal hitting sets for the kernels, we can compute the overall weight of each of the hitting sets and remove the sentences in the one with lower weight. This is shown in Algorithm \ref{RemoveSpecific}. It uses the min-hit-CUT algorithm that gets the minimum hitting sets given a kernel set. There could be more than one minimum hitting set.
-
-\begin{algorithm}
-\caption{Removing specific hitting set}
-\label{RemoveSpecific}
-\begin{algorithmic}[1]
-\Function {getMostSpecificHit}{kernelset}
-\State min-hit-sets = min-hit-CUT(kernelSet)
-\State $min = \infty$
-\State hit = NULL
-\State w(s) = 0, for every $s \in min-hit-sets$
-\For{every s in min-hit-sets}
-\For{every $A \sqsubseteq B$ in s}
-\State $w(s) = w(s) + weight(A \sqsubseteq B)$
-\EndFor
-\If{w(s) $<$ min}
-\State min = w(s)
-\State hit = s
-\EndIf
-\EndFor
-\State
-\Return hit
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Now the CUT method in Algorithm \ref{MainAlgorithm} can be re implemented using the algorithms introduced here to account for specificity heuristics. Given a TBox $T$ and a GCI $A$, the contraction algorithm can look like Algorithm \ref{MainAlgorithmModified}.
-
-\begin{algorithm}
-\caption{Contraction algorithm -- modified}
-\label{MainAlgorithmModified}
-\begin{algorithmic}[1]
-\Procedure{contract}{T, A}
-\State kernelset = \Call{pinpoint}{T, A}
-\State graphBuild(T)
-\State assignWeights(T)
-\State giveUpSet = \Call{getMostSpecificHit}{kernelset}
-\State T = T / giveUpSet
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-The contraction algorithms in this version guarantees the minimality and specificity of the removed beliefs. It guarantees the minimality by reducing the selection of beliefs from the kernelset to the minimal hitting set problem. The better the performance and the optimality of the hitting set algorithms, the more minimal and efficient the contraction algorithm is. If the minimal set algorithm produces more than one solution of the same size, the specificity heuristic is used as a tie-breaker. It selects the solution with more specific beliefs to be removed.
-
-The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(nl)$, where $n$ is the size of the TBox $T$ and $l$ is the depth of the subsumption graph; it works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $T$. Finally, the $getMostSpecificHit$ function takes $O(nm)$ steps in the worst case, where $n$ is the size of the TBox $T$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
 
 
 

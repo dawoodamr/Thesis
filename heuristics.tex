@@ -1,10 +1,90 @@
-\chapter{Heuristics to contraction}
-Considering algorithms that guarantee contraction with minimum change is not always enough for optimal contraction. Optimality in semantics is always important to consider. This means that if we have two possible \textit{giveUpSets} of the same size, one could be better than the other, semantically. So far, we have only implemented algorithms that compute the smallest \textit{giveUpSets} without looking at what is being removed. In this chapter, we look at two ways of choosing a ``semantically better'' \textit{giveUpSet} to remove. 
+\chapter{Heuristics for contraction}
+Considering algorithms that guarantee contraction with minimum change is not always enough for optimal contraction. So far, we have considered minimal contraction by trying to find the smallest \textit{giveUpSet}. However, we haven't considered the significance of the subsumption hierarchy of $\mathcal{EL}$ in contracting a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
 
-It is ``semantically better'' to remove beliefs that are related than to remove unrelated beliefs. Also, it is better to remove beliefs about specific concepts than general ones. These two selection heuristics are Localization and Specificity. They can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one.
+According to \textit{localization} and \textit{specificity} heuristics, we can prefer to remove a certain set of beliefs to another, even if it is bigger or equal in size. We can say that it is ``semantically better'' to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. Also, it is better to remove beliefs about specific concepts than general ones. These two selection heuristics, localization and specificity, can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one. They can also be used on their own regardless of the size of the \textit{giveUpSets}.
+
+Before discussing localization and specificity, there is another approach that is worth mentioning. That approach is the \textit{Greedy} approach that was introduced in \cite{zwei}. It does not account for the subsumption relationship between $\mathcal{EL}$ concepts (it is language independent). It only cares about the intersection between kernels. After explaining how it works, we will turn to the two language-dependent heuristics and see how they work.
+
+
+\section{Greedy Contraction}
+The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following step). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
+
+\begin{algorithm}
+\caption{Greedy Selection}
+\label{GreedyAlgorithm}
+\begin{algorithmic}[1]
+\Function {GreedyContract}{$kernelset, beliefs$}
+\State $initializeValidKernels(kernelset)$
+\State $initializeBeliefOccurances(beliefs)$
+\State $computeOccurances(kernelset, beliefs)$
+\State \Return $selectMaxBeliefs($kernelset, beliefs$)$
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function{initializeValidKernels}{$kernelset$}
+\State $validKernels = 0$ $// global \: variable$
+\For{$i = 1$ to $size(kernelset)$}
+\State $validKernel[i] = 1$  $// global \: array$
+\State $validKernels = validKernels + 1$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function{initializeBeliefOccurances}{$beliefs$}
+\For{$i = 1$ to $size(beliefs)$}
+\State $occurs[i] = 0$  $// global \: array$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function{computeOccurances}{$kernelset, beliefs$}
+\For{$i=1$ to $size(beliefs)$}
+\For{$j=1$ to $size(kernelset)$}
+\If{$kernelset[j].contains(beliefs[i])$}
+\State $occurs[i] = occurs[i] + 1$
+\EndIf
+\EndFor
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function{selectMaxBeliefs}{$kernelset, beliefs$}
+\State $giveUpSet = \lbrace \rbrace$
+\While{$validKernels > 0$}
+\State $max = 0$
+\State $maxIndex = 0$
+
+\For{$i=1$ to $size(beliefs)$}
+\If{$occurs[i]>max$}
+\State $max = occurs[i]$
+\State $maxIndex = i$
+\EndIf
+\EndFor
+
+\For{$i=1$ to $size(kernelset)$}
+\If{$kernelset[i].contains(beliefs[maxIndex])$}
+\State $validKernel[i] = 0$
+\State $validKernels = validKernels - 1$
+\EndIf
+\EndFor
+\State $occurs[beliefIndex] = 0$
+\State $giveUpSet = giveUpSet \cup \lbrace beliefs[maxIndex] \rbrace$
+\EndWhile
+\State \Return $giveUpSet$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction algorithm to remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs to be removed. 
+
+The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$ and the size of $kernelset$ is $n$, then the worst-case time complexity is $O(n^2 + nm)$ (or $O(n(n+m))$).
 
 \section{Localization}
-When giving up beliefs, we are not confident about our knowledge of what the beliefs are related to. Removing related beliefs, or beliefs about one common concept, seems better as it only questions the knowledge about that concept. If we remove beliefs about more concepts, then we would be questioning our knowledge about those concepts. According to \cite{zwei}, it is more efficient to remove knowledge who share concepts or roles because it means there are less areas of knowledge we are questioning.
+When giving up beliefs, we are not confident about our knowledge of what the beliefs are related to. Removing related beliefs, or beliefs about one common concept, seems better as it only questions the knowledge about that concept. If we remove beliefs about more concepts, then we would be questioning our knowledge about those concepts. According to \cite{zwei}, it is more efficient to remove knowledge that shares concepts or roles because it means there are less areas of knowledge we are questioning.
 
 This seems a reasonable approach as humans tend to deal with related beliefs than unrelated ones. If we try to revise our knowledge, we will probably find ourselves leaning towards focusing on beliefs that share common concepts. 
 
@@ -24,26 +104,41 @@ and we can see that there are two (5)-kernels:
 \{1, 2\} and \{3, 4\}
 \end{center}
 
-So, to contract the knowledge by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we question our knowledge of $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, only questions out knowledge of $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
+So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we question our knowledge of $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, only questions out knowledge of $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
 
-Localization is implemented using a graph approach in \cite{zwei}. The algorithm operates on a graph built from the knowledge base as follows:
-\begin{enumerate}
-\item Create an empty graph $G=(V, E)$.
-\item For every GCI $A \sqsubseteq B$, add node $A \sqsubseteq B$ to $V$.
-\item For every node $X$ and node $Y$, add an edge $e=(X, Y)$ to $E$ if the GCI represented by $X$ and the GCI represented by $Y$ share a concept or role.
-\end{enumerate}
+Localization is implemented in \cite{zwei} using a graph-like approach. The algorithm operates by defining edge-like relationship between formulas and using graph connectivity and graph clustering rules to determine localized sets. 
 
-After following these steps, we will end up with a graph whose nodes are the GCIs of the knowledge base, and whose edges exist between nodes representing GCIs with shared concepts or roles. 
+\begin{defn}
+For every two formulas $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an edge between them if they share a concept or role.
+\end{defn}
+
+After applying that, we will end up with a graph-like structure, where some GCIs of the knowledge base are connected by edges. The most basic path in a graph is an edge, but a path can be composed of more than one edge. Generally, a path is a sequence of edges.
 
 \begin{defn}(Conncected GCIs)
-Two GCI nodes $A$ and $B$ are connected in graph $G$ if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and nodes $Ae_1N_1e_2 ... N_{n-1}e_nB$, where $N_i$ is a node, $e_i$ is an edge, every triple $N_ie_{i+1}N_{i+1}$ means $N_i$ and $N_{i+1}$ are connected, and $n \geq 0$.
+Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and formulas $Ae_1F_1e_2 ... F_{n-1}e_nB$, where $F_i$ is a formula, $e_i$ is an edge, every triple $F_ie_{i+1}F_{i+1}$ means $F_i$ and $F_{i+1}$ are connected by an edge, and $n \geq 0$.
 \end{defn}
+
+So, in the previous $\mathcal{EL}$ example, we can remove one of the following sets to contract (5):
+\begin{itemize}
+\item \{1, 3\} (a)
+\item \{1, 4\}. (b)
+\end{itemize}
+
+There are more possible \textit{giveUpSets}, but (a) and (b) are sufficient to show how the definition of connected GCIs can be applied. 
+
+For the set (a), there is an edge between (1) and (3) because they share the same concept \textit{AspergillusFumigatus}. So, according to the definition, (1) and (3) are connected.
+
+For the set (b), there is no edge between (1) and (4) because they don't share any concept or role. So according to the definition, (1) and (4) are not connected.
 
 \begin{defn}(Clusters)
 A node $X$ belongs to a cluster $\mathfrak{C}$ if and only if $X$ is connected to every node in $\mathfrak{C}$.
 \end{defn}
 
-The algorithm uses the notion of clusters to identify the best \textit{giveUpSet}. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the \textit{giveUpSet}. If a \textit{giveUpSet} contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the higher number of clusters in a set the more sparse the graph is, hence the less localized the contraction is.
+Thus, according to the definitions, the set (a) has only one cluster, as (1) and (3) are connected and belong to the same cluster. However, the set (b) has two clusters, because (1) and (4) are not connected in (b), so they belong to two different clusters.
+
+The algorithm uses the notion of clusters to identify the best \textit{giveUpSet}. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the \textit{giveUpSet}. If a \textit{giveUpSet} contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the higher number of clusters in a set the more sparse the graph is, hence the less localized the contraction is. 
+
+The algorithms works on each possible \textit{giveUpSet} separately. It builds the graph-like edges between formulas in the set according to the definitions we gave. It is important that the algorithm computes the connectivity in each set separately, because two formulas might have a path between them in one set but not the other; so they would be considered connected in a set and disconnected in the other. The algorithm then counts the number of clusters. It does that for all the sets, then chooses the set with least number of clusters to be removed.
 
 \begin{algorithm}
 \caption{Computing localized hit}
@@ -90,4 +185,155 @@ The algorithm uses the notion of clusters to identify the best \textit{giveUpSet
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and choosing the one with the smallest number.
+Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and then choosing the one with the smallest number.
+
+\section{Specificity}
+
+The subsumption hierarchy enforced by the subsumption relation in $\mathcal{EL}$ categorizes beliefs (or GCIs) into different levels of generality and specificity. Consider the kernel:% in Figure \ref{fig:AnimalKernel},
+\begin{figure}[h]
+\begin{center}
+$Lion \sqsubseteq Mammal$\\
+$Mammal \sqsubseteq Vertebrate$\\
+$Vertebrate \sqsubseteq Animal$
+\end{center}
+\caption{Simple Animal kernel}
+\label{fig:AnimalKernel}
+\end{figure}
+
+which implicitly entails
+\begin{center}
+$Lion \sqsubseteq Animal$
+\end{center}
+And suppose we would like to contract the $TBox$ by $Lion \sqsubseteq Animal$. We have three options: we can remove $Lion \sqsubseteq Mammal$, $Mammal \sqsubseteq Vertebrate$, or $Vertebrate \sqsubseteq Animal$. Removing any of the three GCIs would guarantee minimum change. However removing $Lion \sqsubseteq Mammal$ sounds much more reasonable than removing $Vertebrate \sqsubseteq Animal$: $Lion \sqsubseteq Mammal$ involves concepts that are more specific than the ones involved in $Vertebrate \sqsubseteq Animal$. Removing $Vertebrate \sqsubseteq Animal$ may affect more concepts in the subsumption hierarchy (in worst case) than those affected by removing $Lion \sqsubseteq Mammal$. 
+
+So, it is preferable to remove GCIs that involve specific concepts rather than removing GCIs that involve more general ones. To account for specificity, we assign a label to each of the concepts representing its level in the subsumption hierarchy, where levels increase with generality. And during contraction, we consider contracting GCIs that involve concepts at lower level before considering GCIs that involve concepts at higher level.
+
+The approach we follow in this study for adopting the preference of removing sentences that contain more specific concepts is by assigning weights to every GCI that reflects its generality, then we select the kernels with minimal overall weight. Every GCI gets a numeric weight depending on the level of generality of the concepts involved in it (depending on their position in the subsumption graph). A GCI $A \sqsubseteq B$ gets weight `0' if $A$ has no children, i.e. if there is no rule of the form $X \sqsubseteq A$, where $X$ is an arbitrary concept; and the GCI involving its parent will have weight `1' in that case. So the weight somehow represents the level in the subsumption graph, starting from level `0' at the trees' roots. For simplicity, we assume that the $TBox$ is acyclic -- so we avoid the problems that will be caused by loops.
+
+
+Similar to the hierarchy of the subsumption graph of an $\mathcal{EL}$ TBox, we give a definition to \textit{parent} and \textit{child} concepts as follows:
+\begin{defn}
+\label{defn:Parent-Child}
+For the GCI $A \sqsubseteq B$:
+\begin{itemize}
+\item $A$ is a \textit{child} concept relative to $B$, and
+\item $B$ is a \textit{parent} concept relative to $A$.\\
+\end{itemize}
+\end{defn}
+
+So by looking again at Figure \ref{fig:AnimalKernel}, we can now say that:
+\begin{itemize}
+\item Mammal is a \textit{parent} of Lion, and Lion is a \textit{child} of Mammal
+\item Vertebrate is a \textit{parent} of Mammal, and Mammal is a \textit{child} of Vertebrate
+\item Animal is a \textit{parent} of Vertebrate, and Vertebrate is a \textit{child} of Animal
+\item Animal is the most \textit{general} concept, i.e. Animal subsumes all other concepts
+\item Lion is the most \textit{specific} concept (least \textit{general}), i.e. it is subsumed by all other concepts
+\item $Lion \sqsubseteq Mammal$ has weight = 0
+\item $Mammal \sqsubseteq Vertebrate$ has weight = 1
+\item $Vertebrate \sqsubseteq Animal$ has weight = 2
+\end{itemize}
+
+The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $T$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
+
+\begin{algorithm}
+\caption{Building the children graph}
+\label{GraphBuild}
+\begin{algorithmic}[1]
+\Function {graphBuild}{T}
+\State $children(X) = \emptyset$, for every concept X in T 
+\For{every $A \sqsubseteq B \in T$}
+\State $children(B) = children(B) \cup \{ A \}$
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now we have a graph composed of concepts and their $children$ relation; the nodes are concepts and the edges are the child-parent relationship between them. The roots are now concepts with no parents, and the leaves are concepts with no children. The GCIs involving leaves are assigned weight `0' and it increases by `1' every step towards the roots. So, the roots are most general concepts, and the leaves are most specific. If a GCI contains concepts $\alpha \sqsubseteq \beta$, where $\alpha$ has no parents and $\beta$ has no children, then it gets weight `0' according to Algorithm \ref{AssignWeights}.
+
+\begin{algorithm}
+\caption{Assigning Weights}
+\label{AssignWeights}
+\begin{algorithmic}[1]
+\Function {assignWeights}{T}
+\For{every $A \sqsubseteq B \in T$}
+\State $weight(A \sqsubseteq B) = GetWeight(A \sqsubseteq B)$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function {getWeight}{$X \sqsubseteq Y$}
+\If{$weight(X \sqsubseteq Y) \neq NULL$}
+\State
+\Return $weight(X \sqsubseteq Y)$
+\EndIf
+\If{$children(X) = \emptyset$}
+\State
+\Return 0
+\Else
+\State
+\Return $1 + GetMaxWeight(X)$
+\EndIf
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\Function {getMaxWeight}{X}
+\State max = -- 1
+\For{every Z in children(X)}
+\State w = GetWeight($Z \sqsubseteq X$)
+\If{ w $>$ max}
+\State max = w
+\EndIf
+\EndFor
+\State
+\Return max
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now we have every GCI in T assigned a weight relative to its level of generality. So, in every kernel we have a preference level of what to give up. Based on the weights, we will choose the sentences with less weight over the ones with more weight to remove. This preference can be used as a tie-breaker after we apply the minimal hitting set algorithm and end up with more than one minimal set. If we arrive at two minimal hitting sets for the kernels, we can compute the overall weight of each of the hitting sets and remove the sentences in the one with lower weight. This is shown in Algorithm \ref{RemoveSpecific}. It uses the min-hit-CUT algorithm that gets the minimum hitting sets given a kernel set. There could be more than one minimum hitting set.
+
+\begin{algorithm}
+\caption{Removing specific hitting set}
+\label{RemoveSpecific}
+\begin{algorithmic}[1]
+\Function {getMostSpecificHit}{kernelset}
+\State min-hit-sets = min-hit-CUT(kernelSet)
+\State $min = \infty$
+\State hit = NULL
+\State w(s) = 0, for every $s \in $ min-hit-sets
+\For{every s in min-hit-sets}
+\For{every $A \sqsubseteq B$ in s}
+\State $w(s) = w(s) + weight(A \sqsubseteq B)$
+\EndFor
+\If{w(s) $<$ min}
+\State min = w(s)
+\State hit = s
+\EndIf
+\EndFor
+\State
+\Return hit
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Now the CUT method in Algorithm \ref{MainAlgorithm} can be re-implemented using the algorithms introduced here to account for specificity heuristics. Given a TBox $T$ and a GCI $A$, the contraction algorithm is given in Algorithm \ref{MainAlgorithmModified}.
+
+\begin{algorithm}
+\caption{Contraction algorithm -- modified}
+\label{MainAlgorithmModified}
+\begin{algorithmic}[1]
+\Procedure{contract}{T, A}
+\State kernelset = \Call{pinpoint}{T, A}
+\State graphBuild(T)
+\State assignWeights(T)
+\State giveUpSet = \Call{getMostSpecificHit}{kernelset}
+\State T = T / giveUpSet
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+The contraction algorithms in this version guarantees the minimality and specificity of the removed beliefs. It guarantees the minimality by reducing the selection of beliefs from the kernelset to the minimal hitting set problem. The better the performance and the optimality of the hitting set algorithms, the more minimal and efficient the contraction algorithm is. If the minimal set algorithm produces more than one solution of the same size, the specificity heuristic is used as a tie-breaker. It selects the solution with more specific beliefs to be removed.
+
+The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(nl)$, where $n$ is the size of the TBox $T$ and $l$ is the depth of the subsumption graph. The algorithm works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $T$. Finally, the $getMostSpecificHit$ function takes $O(nm)$ steps in the worst case, where $n$ is the size of the TBox $T$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
