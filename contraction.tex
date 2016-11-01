@@ -397,4 +397,74 @@ $\mathcal{T} = \lbrace B \sqsubseteq C \rbrace$.
 \end{center}
 
 \end{enumerate}
-This example shows how the graph approach works as expected and produces similar results to the approach of generating kernels using pinpointing algorithm then incising them using the minimal hitting set algorithms. However, this approach does not always work. The next example will show how the conjunction ($\sqcap$) introduces more complexity that the algorithm cannot solve.
+
+
+\subsubsection{A failing example}
+The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) introduces more complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
+\begin{center}
+$\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C \rbrace$
+\end{center}
+we can see that it entails
+\begin{center}
+$A \sqsubseteq B \sqcap C$.
+\end{center}
+If we want to contract the TBox by $A \sqsubseteq B \sqcap C$, we would look for its kernels and remove a statement from each. In this example we have only one kernel:
+\begin{center}
+$\lbrace A \sqsubseteq B, A \sqsubseteq C \rbrace$.
+\end{center}
+So removing one of the two GCIs is enough to give up $A \sqsubseteq B \sqcap C$. Contracting it using our graph approach works as follows:
+
+\begin{enumerate}
+\item complete($\mathcal{T}$). 
+The TBox is already normalized. Translating it into a graph and applying the completion rules will introduce $A \sqsubseteq B \sqcap C$ and will be added explicitly to the TBox.
+\item transform($\mathcal{T}$).
+After transforming the TBox into a graph, it will look like the graph in Figure \ref{abcbc-kb}.
+
+\begin{figure}
+\centering
+\fbox{\includegraphics[scale=0.5]{abcbc-kb.jpg}}
+\caption{Graph representing TBox $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, A \sqsubseteq B \sqcap C \rbrace $}
+\label{abcbc-kb}
+\end{figure}
+
+\item getPaths(graph, $A$, $B \sqcap C$) will get all paths between $A$ and $B \sqcap C$. There is only one such path, which is the edge between them. So cutting this edge would be the only possible outcome of the algorithm.
+\end{enumerate}
+
+This last step is where the algorithm fails. It finds only one of the kernels because it does not recognize that the two parallel edges from A to B and C actually form another kernel. This is because a kernel in our graph approach can only be represented as a path. The conjunction symbol $\sqcap$ has a different meaning, and is not analogous to the path notion. However, the algorithm worked with the previous example because the GCI we tried to remove was the result of applying the transitivity property of the subsumption symbol ($\sqsubseteq$) to two other GCIs and they together were represented by a path in the graph representation.
+
+Similarly, we can argue that the algorithm also fails when the existential quantification symbol ($\exists$) is used. For example, the following TBox:
+\begin{center}
+$\mathcal{T} = \lbrace A \sqsubseteq \exists r.B, B \sqsubseteq C \rbrace$
+\end{center}
+implies the following expression:
+\begin{center}
+$A \sqsubseteq \exists r.C$
+\end{center}
+The graph approach would not get the kernels of that expression using the getPaths() function. So, it will also fail. But this is only because of the subsumption of $B$ by $C$, where $B$ is included in the role expression $\exists r.B$. If the existential quantification symbol is used without changing the symbols involved in the roles (such as $B$), the algorithm will work fine, as it will only be depending on the subsumption relations between concept expressions.
+
+So it seems that the limitations of this algorithm are only due to missing relations between nodes, e.g. $\exists r.B$ is not related to $\exists r.C$ even if we know that $B \sqsubseteq C$. The only relation between nodes is represented by the edges that reflect the subsumption relation. Likewise, the nodes representing $C$ and $D$ are not related to the node representing $C \sqcap D$. And even if we add the subsumption $C \sqcap D \sqsubseteq C$ and $C \sqcap D \sqsubseteq D$, the graph approach will still be unable to determine the significance of $A \sqsubseteq C$ in proving that $A \sqsubseteq C \sqcap D$.
+
+
+\subsubsection{Analysis of the graph algorithm}
+
+
+\subsection{How to generate kernels?}
+So far, we have discussed two ways for generating all kernels:
+\begin{enumerate}
+\item Using the pinpointing algorithm.
+\item Using the graph approach.
+\end{enumerate}
+Computing kernels using the graph approach finds all kernels by performing depth-first search on the graph representation of the TBox. It finds all kernels in $O(E)$, where $E$ is the number of edges in the graph (or the number of GCIs in the TBox). However, it only works with subsumptions that do not include the conjunction symbol ($\sqcap$). So, in cases where the conjunction is not used in the TBox, the graph approach will be at least as efficient as the pinpointing approach, if not better (the axiom pinpointing algorithm introduced in \cite{pin} finds one kernel in polynomial time).
+
+
+\subsection{What incision function to use?}
+If we care about selecting minimum number of beliefs to remove, then there are two incision approaches we discussed so far:
+\begin{enumerate}
+\item The minimum hitting set algorithm.
+\item The minimum cut algorithm for the network flow problem.
+\end{enumerate}
+The minimum hitting set problem is NP-hard. However, the algorithm we discussed in this study is a relatively efficient approximation algorithm. However, in cases where the minimum cut approach can be used, the minimum cut algorithm is probably the best and most efficient. The algorithm works by finding the max flow possible through the network build from the TBox, and then uses it to find the minimum cut.
+
+The Ford-Fulkerson maximum flow algorithm typically takes $O(E.C)$ steps to find the maximum flow, where $E$ is the number of edges and $C$ is the sum of all capacities. Since all edges in our approach has capacity 1, $C$ is equal to $E$. So the complexity of the algorithm is $O(E^2)$. After finding the maximum flow, we can find the minimum cut in $O(E)$. So the overall complexity of the algorithm is $O(E^2)$.
+
+In other cases where the graph approach is not applicable, the minimum hitting set algorithm is a good candidate. In the next chapter, we will also give some techniques for implementing the incision function. Some of them might be even more suitable than the minimum hitting set approach, depending on the domain and the preferences of the user.

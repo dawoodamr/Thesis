@@ -1,0 +1,60 @@
+\begin{thebibliography}{10}
+
+\bibitem{hit}
+Rui Abreu and Arjan J.~C. van Gemund.
+\newblock A low-cost approximate minimal hitting set algorithm and its
+  application to model-based diagnosis.
+\newblock In Vadim Bulitko and J.~Christopher Beck, editors, {\em SARA}. AAAI,
+  2009.
+
+\bibitem{safe}
+Carlos~E. Alchourr{\'o}n and David Makinson.
+\newblock On the logic of theory change: Safe contraction.
+\newblock {\em Studia Logica}, 44(4):405--422, 1985.
+
+\bibitem{new}
+Franz Baader.
+\newblock What’s new in {D}escription {L}ogics.
+\newblock {\em Informatik-Spektrum}, 34(5):434--442, 2011.
+
+\bibitem{small}
+Franz Baader, Carsten Lutz, and Anni-Yasmin Turhan.
+\newblock Small is {A}gain {B}eautiful in {D}escription {L}ogics.
+\newblock {\em KI - Künstliche Intelligenz}, 24(1):25--33, 2010.
+
+\bibitem{pin}
+Franz {Baader}, Rafael {Pe{\~n}aloza}, and Boontawee {Suntisrivaraporn}.
+\newblock Pinpointing in the description logic $\mathcal{EL}$.
+\newblock In {\em Proceedings of the 2007 International Workshop on Description
+  Logics ({DL2007})}, volume 250 of {\em CEUR-WS}, pages 171--178,
+  Brixen/Bressanone, Italy, June 2007. Bozen-Bolzano University Press.
+
+\bibitem{hansson}
+S.O. Hansson.
+\newblock {\em A Textbook of Belief Dynamics: Theory Change and Database
+  Updating}.
+\newblock Number v. 2 in Applied logic series. Kluwer Academic Publishers,
+  1999.
+
+\bibitem{kernel}
+Sven~Ove Hansson.
+\newblock Kernel contraction.
+\newblock {\em J. Symb. Log.}, 59(3):845--859, 1994.
+
+\bibitem{alg}
+Jon Kleinberg and Eva Tardos.
+\newblock {\em Algorithm Design}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 2005.
+
+\bibitem{zwei}
+Zhiwei Liao.
+\newblock Kernel contraction in $\mathcal{EL}$.
+\newblock Master's thesis, Simon Fraser University, 2014.
+
+\bibitem{econ}
+Rafael~R. Testa.
+\newblock The cost of consistency: information economy in paraconsistent belief
+  revision.
+\newblock {\em South American Journal of Logic}, 1(2):461--480, December 2015.
+
+\end{thebibliography}
