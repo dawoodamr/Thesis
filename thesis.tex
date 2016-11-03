@@ -106,14 +106,109 @@
 \include{introduction}
 
 \include{background}
+\section{Belief change}
+\subsection{Epistemic states}
+As the word ``change" suggests, our concern is about transitions between what we can call \textit{epistemic states}. One can think of an epistemic state as the state of belief of an agent (or a human), and of the change as the move from such a state to a new state. The beliefs of an agent can be modelled -as the epistemological theory suggested in \cite{flux}- as a set of propositions (or beliefs). Those beliefs are not meant to be psychological propositions expressing beliefs in human mind; they are epistemological \textit{idealizations} of psychological propositions in the human mind. It is reasonable to consider that every agent should always seek an \textit{equilibrium} state, where the epistemic state is consistent; and if some concepts are contradicting, the agent ought to revise its beliefs to reach a consistent state. Throughout this study, we use the words ``belief sets" and ``epistemic state", and they are not exactly the same, although they are somewhat similar; A \textbf{Belief Set} is the set of all beliefs that an agent believes, while an \textbf{Epistemic State} is the complete state of the agent's epistemic attitudes towards all beliefs, including the ones that the agent does not believe in.
+
+Later in \ref{dl}, we will discuss Description Logics (DLs) as formalisms to express knowledge, and start using DL \textit{concepts} to represent belief sets. All following discussions about \textit{contraction} algorithms will use such representation.
+
+
+\subsection{Epistemic attitudes}
+A belief of an agent can be interpreted according to the concepts in an epistemic state. If a concept $C$ exists in an epistemic state, we say that the agent believes in $C$, or \textit{accepts} $C$ \cite{flux}. However, \textit{accepting} a belief is not the only attitude an agent can have towards a concept; an agent can also \textit{reject} a concept if the negation of that concept is in the epistemic state. It is also possible that an agent stays \textit{undetermined} (or ignorant) about a concept if neither the concept nor its negation is in the belief set. There can be more attitudes if we consider other models of beliefs such as the probabilistic model, where an agent might have different levels of beliefs. But for the scope of this study we are only interested in the three attitudes: \textit{accept}, \textit{reject} and \textit{no clue}.
+\subsection{Basic types of change}
+\subsection{AGM framework}
+\section{Description logic}
+\label{dl}
+One of the earliest approaches to representing knowledge is using logic. Logic has been suitable for general-purpose applications. Another approach is what is so-called semantic networks, which is a graph (or a network)-based approach. Semantic networks use graphs to represent knowledge\cite{dl}, where nodes represent \textit{concepts} and edges represent \textit{relationships} between them.
+
+\textit{Description Logic} (DL) comes as an evolution of semantic networks to a logic-based approach with some new flavours. DL is a class of logics based on -as the name suggests- describing sets of individuals using \textit{concepts} and describing the relationships between them using \textit{roles}. Usually, two types of knowledge need to be represented: \textit{intensional} and \textit{extensional} knowledge. Intensional knowledge is general knowledge about a problem or a domain, while extensional knowledge is knowledge about a specific problem instance. For this purpose, a knowledge base\footnote{By the word \textit{Knowledge base} we refer to a belief set -- a set of sentences that represent the belief of an agent.} is composed of two main components: Terminological Box, which we will refer to by \textit{TBox}, and Assertions Box, which we refer to by \textit{ABox}.
+
+To get an idea about what DL looks like, we look at two categories of symbols: logical and non-logical symbols. \textbf{Non-logical} symbols include the following:
+\begin{description}
+\item[Concepts] that are similar to category nouns (e.g. $Human$, $Mother$, $Animal$, $College$, etc.). They are used to represent classes (or sets) of individuals. So we can use the concept $Animal$ to refer to the set of animals, and the concept $Man$ to represent the class of men.
+\item[Roles] that are like relational nouns (e.g. $MotherOf$, $HeightOf$, etc.). They can be used to specify attributes of concepts.
+\item[Constants] and they are used to represent individuals, and they are similar to proper nouns, e.g. $Adam$, $Sally$, etc.
+\end{description}
+
+Concepts and roles can be used with the help of some logical symbols to construct complex expressions. \textbf{Logical} symbols include the following:
+\begin{itemize}
+\item $\sqcap, \sqcup, \neg$ used as propositional constructors (conjunction, disjunction, and negation respectively).
+\item $\forall, \exists$ used for restriction and quantification.
+\item $\top, \bot$ ($\top$ represents the set of all individuals, while $\bot$ represents the empty set of individuals). 
+\end{itemize}
+
+Logical and non-logical symbols can be used together to construct complex expressions. To get a sense of how to build complex expressions, suppose $C$ and $D$ are concepts, and $R$ is a role:
+\begin{itemize}
+\item $C \sqcap D$, $C \sqcup D$, and $\neg C$ are concepts.
+\item $\forall R.C$, and $\exists R.\top$ are concepts.
+\end{itemize}
+
+
+\subsection{ABox}
+As we said at the beginning of this section, to represent knowledge we usually look at intensional and extensional knowledge. DL knowledge bases usually consist of two main components: TBox and ABox. \textbf{ABox} is built from assertions (extensional knowledge) about a specific problem or domain, e.g.
+\begin{center}
+$Girl(Sally)$ may represent the fact that $Sally$ is a $Girl$ and, \\
+$FatherOf(Adam, Sally)$ may represent the fact that $Adam$ is the $Father$ $Of$ $Sally$
+\end{center} 
+where $Sally$ and $Adam$ are constants, $Girl$ is a concept name, and $FatherOf$ is a role name. Using such representation, ABoxes can be built to represent assertions about a problem or a domain.
+
+
+\subsection{TBox}
+Suppose that $Human$ is a concept that refers to all humans, and $Male$ is the concept that refer to all male beings. We can use conjunction ($\sqcap$) in
+\begin{center}
+$Human \sqcap Male$
+\end{center}
+to represent all individuals that are both humans and male beings. We can also define a new concepts $Man$ to represent those individuals by introducing the definition
+\begin{center}
+$Man \doteq Human \sqcap Male$
+\end{center}
+So every man has to satisfy that definition. The $TBox$ is composed of concept definitions and General Concept Inclusion rules (GCIs). GCIs are weaker than definitions; the rule
+\begin{center}
+$Man \sqsubseteq Human$
+\end{center}
+states that $Man$ is subsumed by $Human$, which means that every man is a human\footnote{or more precisely, every member of the set represented by $Man$ is also a member of the set represented by $Human$.}. Every definition can be safely broken down into two GCIs. For example, the definition
+\begin{center}
+$Man \doteq Human \sqcap Male$
+\end{center}
+can be broken down into the two GCIs:
+\begin{center}
+$Man \sqsubseteq Human \sqcap Male$ \\
+$Human \sqcap Male \sqsubseteq Man$
+\end{center}
+
+\textbf{Tboxes} are used to represent general knowledge (intensional knowledge) about a class of problems or domains, using axioms (or terminologies). A typical TBox is composed of definitions and GCIs -- sometimes for convenience all definitions are broken down into GCIs. The following is an example of a -somewhat incomplete- DL TBox:
+\begin{enumerate}
+\item $Man \doteq Human \sqcap Male$.
+\item $Woman \sqsubseteq Human \sqcap \neg Man$.
+\item $Father \doteq Man \sqcap \exists ParentOf. \top$
+\item $Mother \doteq Woman \sqcap \exists ParentOf. \top$
+\item $FatherWithoutSon \doteq Father \sqcap \forall ParentOf. \neg Man$.
+\item $Parent \doteq Father \sqcup Mother$
+\item $GrandFather \sqsubseteq Father \sqcap \exists ParentOf.Parent$
+\end{enumerate}
+where they can be interpreted such that \#1 defines $Man$ to be a human male, \#2 states that every $Woman$ is a human and not a man, \#3 defines $Father$ to be a man that is a parent of something (since $\top$ includes everything), \#4 defines $Mother$ similarly, \#5 defines a $FatherWithoutSon$ to be a father which every individual that is in a ``$ParentOf$" relationship with is not a man, \#6 defines a $Parent$ to be a father or a mother, and \#6 states that every $GrandFather$ is a father and in a ``$ParentOf$" relation ship with a parent.
+
+Along with some other symbols and constructors, these symbols are the building blocks of DL formalisms. There are many members of the DL family, that vary in their expressivity power and the complexity of their reasoning algorithms. Each member of the family includes a subset of the DL symbols, and is uniquely identified by the containment of those symbols. In the following section we discuss a very famous member of the DL family, $\mathcal{EL}$, and use it as a knowledge representation language for the rest of the study.
+
+
+\subsection{$\mathcal{EL}$ language}
+One of the DLs that recently became famous and attracted much attention is $\mathcal{EL}$. $\mathcal{EL}$ is a light-weight Description Logic, though it is used in some well-known ontologies such as SNOMED CT, which is a medical ontology that contains around 380000 concepts\cite{new}. $\mathcal{EL}$ only contains a subset of the concept constructors that we discussed in the previous section, and they are:
+\begin{itemize}
+\item The conjunction symbol $\sqcap$
+\item Existential restriction $\exists$
+\item The top concept $\top$
+\end{itemize}
+
+One of the advantages of $\mathcal{EL}$, besides being simple and easy to use, is its polynomial-time subsumption algorithm. The subsumption problem, which is the most important problem in $\mathcal{EL}$, is actually a classification problem. The subsumption algorithm classifies the $TBox$ depending on the subsumption relation expressed by $\sqsubseteq$. The main use of the subsumption problem is to check whether a specific subsumption relation holds or not (e.g. whether $C \sqsubseteq D$ holds or not).
+
+Throughout this study, we only consider DL knowledge bases represented in $\mathcal{EL}$. In the next chapter we look at an implementation of belief contraction using \textit{kernels} as introduced in \cite{zwei}. We discuss basic general approaches and some more sophisticated ones. Then we consider a language-specific approach to exploit the structure of $\mathcal{EL}$. 
+
+
+
 
 \include{contraction}
 
-
-
 \include{heuristics}
-
-
 
 
 

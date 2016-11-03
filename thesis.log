@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.8.23)  1 NOV 2016 15:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.8.23)  1 NOV 2016 19:28
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -471,7 +471,8 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 Document Style - pseudocode environments for use with the `algorithmicx' style
 )
 \c@thm=\count130
- (thesis.aux)
+ (thesis.aux (introduction.aux) (background.aux) (contraction.aux)
+(heuristics.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
@@ -653,35 +654,27 @@ Overfull \hbox (2.43332pt too wide) in paragraph at lines 74--74
 
 ] [5
 
-]
-
-Package hyperref Warning: old toc file detected, not used; run LaTeX again.
-
+] (thesis.toc [6])
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
 
-[6]
-
-Package hyperref Warning: old lot file detected, not used; run LaTeX again.
-
+ [7] (thesis.lot)
 \tf@lot=\write5
 \openout5 = `thesis.lot'.
 
-[7
+ [8
 
-]
-
-Package hyperref Warning: old lof file detected, not used; run LaTeX again.
-
+] (thesis.lof)
 \tf@lof=\write6
 \openout6 = `thesis.lof'.
 
-[8
+ [9
 
 ]
 \openout2 = `introduction.aux'.
 
- (introduction.tex
+
+(introduction.tex
 Chapter 1.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 5.
@@ -696,92 +689,48 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
  (background.tex
 Chapter 2.
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 10.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 10.
-
 ) [3
 
 
 
 ]
+
+LaTeX Warning: Citation `flux' on page 4 undefined on input line 111.
+
+
+LaTeX Warning: Citation `flux' on page 4 undefined on input line 117.
+
+
+LaTeX Warning: Citation `dl' on page 4 undefined on input line 122.
+
+[4
+
+]
+LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 135.
+ [5] [6]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 194.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 194.
+
+[7] [8]
 \openout2 = `contraction.aux'.
 
  (contraction.tex
 Chapter 3.
-
-LaTeX Warning: Citation `kernel' on page 4 undefined on input line 24.
-
-
-LaTeX Warning: Citation `safe' on page 4 undefined on input line 24.
-
-[4
+[9
 
 
-
-]
-
-LaTeX Warning: Citation `hansson' on page 5 undefined on input line 26.
-
-
-LaTeX Warning: Citation `hansson' on page 5 undefined on input line 38.
-
-
-LaTeX Warning: Citation `hansson' on page 5 undefined on input line 47.
-
-
-LaTeX Warning: Citation `pin' on page 5 undefined on input line 55.
-
-[5]
-
-LaTeX Warning: Citation `pin' on page 6 undefined on input line 57.
-
-
-LaTeX Warning: Citation `pin' on page 6 undefined on input line 69.
-
-
-LaTeX Warning: Citation `pin' on page 6 undefined on input line 71.
-
-
-LaTeX Warning: Citation `zwei' on page 6 undefined on input line 76.
-
-
-LaTeX Warning: Citation `zwei' on page 6 undefined on input line 76.
-
+] [10]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 81.
-[6]
-
-LaTeX Warning: Reference `RandomAlgorithm' on page 7 undefined on input line 94
-.
-
-
-LaTeX Warning: Reference `RandomExclusionAlgorithm' on page 7 undefined on inpu
-t line 125.
-
-[7]
-
-LaTeX Warning: Reference `RandomExclusionAlgorithm' on page 8 undefined on inpu
-t line 152.
-
-
-LaTeX Warning: Citation `econ' on page 8 undefined on input line 155.
-
-
-LaTeX Warning: Citation `hit' on page 8 undefined on input line 159.
-
-[8]
-
-LaTeX Warning: Citation `hit' on page 9 undefined on input line 174.
-
-
-LaTeX Warning: Citation `hit' on page 9 undefined on input line 176.
-
+ [11] [12] [13]
 LaTeX Font Info:    Try loading font information for T1+lmtt on input line 189.
+
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -791,28 +740,7 @@ Overfull \hbox (3.86201pt too wide) in paragraph at lines 192--193
 ng set (min-i-mal in both set-containment
  []
 
-[9]
-
-LaTeX Warning: Citation `small' on page 10 undefined on input line 199.
-
-
-LaTeX Warning: Reference `GraphContract' on page 10 undefined on input line 207
-.
-
-
-LaTeX Warning: Citation `new' on page 10 undefined on input line 226.
-
-[10]
-
-LaTeX Warning: Citation `new' on page 11 undefined on input line 233.
-
-
-LaTeX Warning: Citation `small' on page 11 undefined on input line 254.
-
-
-LaTeX Warning: Citation `small' on page 11 undefined on input line 254.
-
-
+[14] [15]
 Overfull \hbox (17.52179pt too wide) in paragraph at lines 254--255
 \OML/lmm/m/it/10.95 Mammal; Mammal \OMS/lmsy/m/n/10.95 v \OML/lmm/m/it/10.95 An
 imal\OMS/lmsy/m/n/10.95 g$\T1/lmr/m/n/10.95 , the new $\OMS/lmsy/m/n/10.95 T$ \
@@ -820,182 +748,85 @@ T1/lmr/m/n/10.95 af-ter adding all sub-sump-tions would be $\OMS/lmsy/m/n/10.95
  f\OML/lmm/m/it/10.95 Human \OMS/lmsy/m/n/10.95 v
  []
 
-[11]
-
-LaTeX Warning: Reference `GetPaths' on page 12 undefined on input line 260.
-
-
-LaTeX Warning: Citation `alg' on page 12 undefined on input line 293.
-
-[12]
-
-LaTeX Warning: Reference `ex1' on page 13 undefined on input line 298.
-
-<example1.jpg, id=275, 363.60844pt x 451.6875pt>
+[16] [17] <example1.jpg, id=395, 363.60844pt x 451.6875pt>
 File: example1.jpg Graphic file (type jpg)
  <use example1.jpg>
 Package pdftex.def Info: example1.jpg used on input line 302.
 (pdftex.def)             Requested size: 181.80377pt x 225.84319pt.
 
-
-LaTeX Warning: Reference `ex1' on page 13 undefined on input line 307.
-
-[13 <./example1.jpg>]
-
-LaTeX Warning: Citation `alg' on page 14 undefined on input line 312.
-
-LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 314.
-
-LaTeX Warning: Reference `GraphContract-modified' on page 14 undefined on input
- line 324.
-
-[14]
-
-LaTeX Warning: Citation `alg' on page 15 undefined on input line 344.
-
-
-LaTeX Warning: Reference `DeTransform' on page 15 undefined on input line 348.
-
-
+[18 <./example1.jpg>] [19]
 Overfull \hbox (25.07228pt too wide) in paragraph at lines 365--366
 []\T1/lmr/m/n/10.95 Since the run-ning time of ev-ery step of the con-trac-tion
  al-go-rithm start-ing from ``transform($\OMS/lmsy/m/n/10.95 T$\T1/lmr/m/n/10.9
 5 )''
  []
 
-[15]
-
-LaTeX Warning: Reference `abc-kb' on page 16 undefined on input line 377.
-
-<abc-kb.jpg, id=293, 380.92313pt x 147.55125pt>
+[20] <abc-kb.jpg, id=418, 380.92313pt x 147.55125pt>
 File: abc-kb.jpg Graphic file (type jpg)
  <use abc-kb.jpg>
 Package pdftex.def Info: abc-kb.jpg used on input line 381.
 (pdftex.def)             Requested size: 190.46109pt x 73.77544pt.
- [16 <./abc-kb.jpg>]
-
-LaTeX Warning: Reference `abcbc-kb' on page 17 undefined on input line 421.
-
-<abcbc-kb.jpg, id=305, 240.14719pt x 246.9225pt>
+ [21 <./abc-kb.jpg>] <abcbc-kb.jpg, id=430, 240.14719pt x 246.9225pt>
 File: abcbc-kb.jpg Graphic file (type jpg)
  <use abcbc-kb.jpg>
 Package pdftex.def Info: abcbc-kb.jpg used on input line 425.
 (pdftex.def)             Requested size: 120.07329pt x 123.46094pt.
- [17 <./abcbc-kb.jpg>]
 
-LaTeX Warning: Citation `pin' on page 18 undefined on input line 457.
-
-[18]) [19]
+[22 <./abcbc-kb.jpg>] [23]) [24]
 \openout2 = `heuristics.aux'.
 
  (heuristics.tex
 Chapter 4.
 
-LaTeX Warning: Citation `zwei' on page 20 undefined on input line 6.
-
-
 LaTeX Warning: Float too large for page by 48.88795pt on input line 80.
 
-[20
+[25
 
 
 
-]
-
-LaTeX Warning: Reference `GreedyAlgorithm' on page 21 undefined on input line 8
-2.
-
-
-LaTeX Warning: Citation `zwei' on page 21 undefined on input line 87.
-
-[21] [22]
-
-LaTeX Warning: Citation `zwei' on page 23 undefined on input line 109.
-
+] [26] [27]
 LaTeX Font Info:    Try loading font information for U+euf on input line 134.
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\ueuf.fd"
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\ueuf.fd"
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
-) [23]
-
-LaTeX Warning: Reference `LocalizeContraction' on page 24 undefined on input li
-ne 188.
-
-[24] [25]
+) [28] [29] [30]
 Underfull \hbox (badness 10000) in paragraph at lines 220--221
 
  []
 
-
-LaTeX Warning: Reference `fig:AnimalKernel' on page 26 undefined on input line 
-224.
-
-
-LaTeX Warning: Reference `defn:Parent-Child' on page 26 undefined on input line
- 236.
-
-
-LaTeX Warning: Reference `GraphBuild' on page 26 undefined on input line 236.
-
-
-LaTeX Warning: Reference `AssignWeights' on page 26 undefined on input line 251
-.
-
-[26]
-
-LaTeX Warning: Reference `RemoveSpecific' on page 27 undefined on input line 29
-5.
-
-[27]
-
-LaTeX Warning: Reference `MainAlgorithm' on page 28 undefined on input line 321
-.
-
-
-LaTeX Warning: Reference `MainAlgorithmModified' on page 28 undefined on input 
-line 321.
-
-
-LaTeX Warning: Reference `AssignWeights' on page 28 undefined on input line 339
-.
-
-) [28] [29]
+[31] [32]) [33] [34]
 Chapter 5.
-[30
+[35
 
 
-] (thesis.bbl) [31
+] (thesis.bbl) [36
 
 
 ]
 Appendix A.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 145.
-[32
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 240.
+[37
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 145.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 240.
  (thesis.aux (introduction.aux) (background.aux) (contraction.aux)
 (heuristics.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 145.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 145.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 240.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 240.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: 99F95DBD2192FFB244B94A093899BDC4;2057.
 
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 9580 strings out of 493334
- 141104 string characters out of 3136675
- 240740 words of memory out of 3000000
- 12756 multiletter control sequences out of 15000+200000
- 101922 words of font info for 82 fonts, out of 3000000 for 9000
+ 9618 strings out of 493334
+ 141485 string characters out of 3136675
+ 244605 words of memory out of 3000000
+ 12764 multiletter control sequences out of 15000+200000
+ 106185 words of font info for 83 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,8n,41p,1169b,443s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 44i,8n,41p,1259b,443s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/
 MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/MiKTeX 2.9/
@@ -1009,18 +840,20 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmbxi10.pfb><C:/Program Files (x86)
 9/fonts/type1/public/lm/lmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
 e1/public/lm/lmmi10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/l
 m/lmmi6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr10.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr6.pfb><C:/Program Files (x86)/M
-iKTeX 2.9/fonts/type1/public/lm/lmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/public/lm/lmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
-ic/lm/lmri10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy1
-0.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Pr
-ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTe
-X 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (40 pages, 496139 bytes).
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi9.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr10.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/lm/lmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/lm/lmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
+lic/lm/lmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmri10
+.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmri9.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Program Files (x86)/MiKTeX
+ 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
+ype1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
+/amsfonts/symbols/msbm10.pfb>
+Output written on thesis.pdf (46 pages, 548103 bytes).
 PDF statistics:
- 510 PDF objects out of 1000 (max. 8388607)
- 148 named destinations out of 1000 (max. 500000)
+ 646 PDF objects out of 1000 (max. 8388607)
+ 163 named destinations out of 1000 (max. 500000)
  288 words of extra memory for PDF output out of 10000 (max. 10000000)
 
