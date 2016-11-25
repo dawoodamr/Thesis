@@ -364,7 +364,7 @@ The last step of the algorithm is to transform the graph back to $\mathcal{EL}$.
 
 Since the running time of every step of the contraction algorithm starting from ``transform($ \mathcal{T} $)'' until the last step is polynomial in the size of the $TBox$, the complexity of the algorithm will depend on the complexity of the first step (the complete() function). If building the subsumption hierarchy by generating all subsumptions of an $\mathcal{EL}$ $TBox$ can be done in polynomial time, then the contraction algorithm will in turn take polynomial time. But if generating all subsumptions takes exponential time, then the algorithm will take exponential running time as well.
 
-\subsubsection{A working example}
+\subsubsection{A Sample Run}
 Suppose we have a TBox $\mathcal{T}$:
 \begin{center}
 $\mathcal{T} = \lbrace A \sqsubseteq B, B \sqsubseteq C \rbrace$
@@ -374,13 +374,13 @@ which implies $A \sqsubseteq C$. Trying to contract $\mathcal{T}$ by $A \sqsubse
 \item complete($\mathcal{T}$). 
 The TBox is already normalized. Translating it into a graph and applying the completion rules will introduce $A \sqsubseteq C$ and will be added explicitly to the TBox.
 \item transform($\mathcal{T}$).
-After transforming the TBox into a graph, it will look like the graph in Figure \ref{abc-kb}.
+After transforming the TBox into a graph, it will look like the graph in Figure \ref{fig:abc-kb}.
 
 \begin{figure}
 \centering
 \fbox{\includegraphics[scale=0.5]{abc-kb.jpg}}
 \caption{Graph representing TBox $\mathcal{T} = \lbrace A \sqsubseteq B, B \sqsubseteq C, A \sqsubseteq C \rbrace $}
-\label{abc-kb}
+\label{fig:abc-kb}
 \end{figure}
 
 \item getPaths(graph, A, C) will get all paths between A and C. There are only two paths: A-B-C and A-C. 
@@ -399,8 +399,8 @@ $\mathcal{T} = \lbrace B \sqsubseteq C \rbrace$.
 \end{enumerate}
 
 
-\subsubsection{A failing example}
-The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) introduces more complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
+\subsubsection{The limitations of the algorithm}
+The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) might introduces further complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
 \begin{center}
 $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C \rbrace$
 \end{center}
@@ -418,13 +418,13 @@ So removing one of the two GCIs is enough to give up $A \sqsubseteq B \sqcap C$.
 \item complete($\mathcal{T}$). 
 The TBox is already normalized. Translating it into a graph and applying the completion rules will introduce $A \sqsubseteq B \sqcap C$ and will be added explicitly to the TBox.
 \item transform($\mathcal{T}$).
-After transforming the TBox into a graph, it will look like the graph in Figure \ref{abcbc-kb}.
+After transforming the TBox into a graph, it will look like the graph in Figure \ref{fig:abcbc-kb}.
 
 \begin{figure}
 \centering
 \fbox{\includegraphics[scale=0.5]{abcbc-kb.jpg}}
 \caption{Graph representing TBox $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, A \sqsubseteq B \sqcap C \rbrace $}
-\label{abcbc-kb}
+\label{fig:abcbc-kb}
 \end{figure}
 
 \item getPaths(graph, $A$, $B \sqcap C$) will get all paths between $A$ and $B \sqcap C$. There is only one such path, which is the edge between them. So cutting this edge would be the only possible outcome of the algorithm.
@@ -440,9 +440,9 @@ implies the following expression:
 \begin{center}
 $A \sqsubseteq \exists r.C$
 \end{center}
-The graph approach would not get the kernels of that expression using the getPaths() function. So, it will also fail. But this is only because of the subsumption of $B$ by $C$, where $B$ is included in the role expression $\exists r.B$. If the existential quantification symbol is used without changing the symbols involved in the roles (such as $B$), the algorithm will work fine, as it will only be depending on the subsumption relations between concept expressions.
+The graph approach will not get the kernels of that expression using the getPaths() function. So, it will also fail. But this is only because of the subsumption of $B$ by $C$, where $B$ is included in the role expression $\exists r.B$. If the existential quantification symbol is used without changing the symbols involved in the roles (such as $B$), the algorithm will work fine, as it will only be depending on the subsumption relations between concept expressions.
 
-So it seems that the limitations of this algorithm are only due to missing relations between nodes, e.g. $\exists r.B$ is not related to $\exists r.C$ even if we know that $B \sqsubseteq C$. The only relation between nodes is represented by the edges that reflect the subsumption relation. Likewise, the nodes representing $C$ and $D$ are not related to the node representing $C \sqcap D$. And even if we add the subsumption $C \sqcap D \sqsubseteq C$ and $C \sqcap D \sqsubseteq D$, the graph approach will still be unable to determine the significance of $A \sqsubseteq C$ in proving that $A \sqsubseteq C \sqcap D$.
+So it seems that the limitations of this algorithm are only due to the difference between the inference using paths between nodes and inference the introduces conjunction or existential quantification. However, the algorithm does not always fail when $\sqcap$ or $\exists$ is involved. In Figure \ref{fig:abc-kb}, if we replace B by (X $\sqcap$ Y), or by  ($\exists r.$B), the algorithm will succeed. That is because the nodes do not change after the inference; all that is added by the subsumption algorithm are new edges. 
 
 
 \subsubsection{Analysis of the graph algorithm}

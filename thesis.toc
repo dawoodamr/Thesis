@@ -7,36 +7,36 @@
 \contentsline {chapter}{List of Figures}{ix}{section*.11}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {chapter}{\numberline {2}Background}{3}{chapter.2}
-\contentsline {section}{\numberline {2.1}Belief change}{4}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Epistemic states}{4}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Epistemic attitudes}{4}{subsection.2.1.2}
+\contentsline {section}{\numberline {2.1}Belief change}{3}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Epistemic states}{3}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Epistemic attitudes}{3}{subsection.2.1.2}
 \contentsline {subsection}{\numberline {2.1.3}Basic types of change}{4}{subsection.2.1.3}
 \contentsline {subsection}{\numberline {2.1.4}AGM framework}{4}{subsection.2.1.4}
 \contentsline {section}{\numberline {2.2}Description logic}{4}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}ABox}{6}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}TBox}{6}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.1}ABox}{5}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}TBox}{5}{subsection.2.2.2}
 \contentsline {subsection}{\numberline {2.2.3}$\mathcal {EL}$ language}{7}{subsection.2.2.3}
-\contentsline {chapter}{\numberline {3}Kernel contraction}{9}{chapter.3}
-\contentsline {section}{\numberline {3.1}What are kernels?}{10}{section.3.1}
-\contentsline {section}{\numberline {3.2}Computing kernels}{11}{section.3.2}
-\contentsline {section}{\numberline {3.3}Previous work}{11}{section.3.3}
-\contentsline {section}{\numberline {3.4}Minimal change}{13}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Hitting set approach}{13}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}Graph approach}{15}{subsection.3.4.2}
-\contentsline {subsubsection}{Main algorithm}{15}{section*.12}
-\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{16}{section*.13}
-\contentsline {subsubsection}{Transformation analysis}{16}{section*.14}
-\contentsline {subsubsection}{Graph kernel contraction}{18}{section*.15}
-\contentsline {subsubsection}{Reduction to network flow problem}{19}{section*.17}
-\contentsline {subsubsection}{A working example}{21}{section*.18}
-\contentsline {subsubsection}{A failing example}{22}{section*.20}
-\contentsline {subsubsection}{Analysis of the graph algorithm}{23}{section*.22}
-\contentsline {subsection}{\numberline {3.4.3}How to generate kernels?}{23}{subsection.3.4.3}
-\contentsline {subsection}{\numberline {3.4.4}What incision function to use?}{24}{subsection.3.4.4}
-\contentsline {chapter}{\numberline {4}Heuristics for contraction}{25}{chapter.4}
-\contentsline {section}{\numberline {4.1}Greedy Contraction}{25}{section.4.1}
-\contentsline {section}{\numberline {4.2}Localization}{26}{section.4.2}
-\contentsline {section}{\numberline {4.3}Specificity}{29}{section.4.3}
-\contentsline {chapter}{\numberline {5}Conclusion}{35}{chapter.5}
-\contentsline {chapter}{Bibliography}{36}{section*.24}
-\contentsline {chapter}{Appendix \numberline {A}Code}{37}{Appendix.a.A}
+\contentsline {chapter}{\numberline {3}Kernel contraction}{8}{chapter.3}
+\contentsline {section}{\numberline {3.1}What are kernels?}{9}{section.3.1}
+\contentsline {section}{\numberline {3.2}Computing kernels}{10}{section.3.2}
+\contentsline {section}{\numberline {3.3}Previous work}{10}{section.3.3}
+\contentsline {section}{\numberline {3.4}Minimal change}{12}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Hitting set approach}{12}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Graph approach}{14}{subsection.3.4.2}
+\contentsline {subsubsection}{Main algorithm}{14}{section*.12}
+\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{15}{section*.13}
+\contentsline {subsubsection}{Transformation analysis}{15}{section*.14}
+\contentsline {subsubsection}{Graph kernel contraction}{17}{section*.15}
+\contentsline {subsubsection}{Reduction to network flow problem}{18}{section*.17}
+\contentsline {subsubsection}{A Sample Run}{20}{section*.18}
+\contentsline {subsubsection}{The limitations of the algorithm}{21}{section*.20}
+\contentsline {subsubsection}{Analysis of the graph algorithm}{22}{section*.22}
+\contentsline {subsection}{\numberline {3.4.3}How to generate kernels?}{22}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.4.4}What incision function to use?}{23}{subsection.3.4.4}
+\contentsline {chapter}{\numberline {4}Heuristics for contraction}{24}{chapter.4}
+\contentsline {section}{\numberline {4.1}Greedy Contraction}{24}{section.4.1}
+\contentsline {section}{\numberline {4.2}Localization}{25}{section.4.2}
+\contentsline {section}{\numberline {4.3}Specificity}{28}{section.4.3}
+\contentsline {chapter}{\numberline {5}Conclusion}{34}{chapter.5}
+\contentsline {chapter}{Bibliography}{35}{section*.24}
+\contentsline {chapter}{Appendix \numberline {A}Code}{36}{Appendix.a.A}
