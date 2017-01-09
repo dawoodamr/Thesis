@@ -29,6 +29,11 @@ Franz {Baader}, Rafael {Pe{\~n}aloza}, and Boontawee {Suntisrivaraporn}.
   Logics ({DL2007})}, volume 250 of {\em CEUR-WS}, pages 171--178,
   Brixen/Bressanone, Italy, June 2007. Bozen-Bolzano University Press.
 
+\bibitem{flux}
+P.~G\"a{}rdenfors.
+\newblock {\em Knowledge in Flux. Modelling the Dymanics of Epistemic States}.
+\newblock Mit Press, 1988.
+
 \bibitem{hansson}
 S.O. Hansson.
 \newblock {\em A Textbook of Belief Dynamics: Theory Change and Database
@@ -50,6 +55,13 @@ Jon Kleinberg and Eva Tardos.
 Zhiwei Liao.
 \newblock Kernel contraction in $\mathcal{EL}$.
 \newblock Master's thesis, Simon Fraser University, 2014.
+
+\bibitem{kr}
+Pavlos Peppas.
+\newblock {\em Handbook of Knowledge Representation}, chapter~8, pages
+  317--359.
+\newblock Foundations of ARTIFICIAL INTELLIGENCE. Elsevier B.V., first edition,
+  2008.
 
 \bibitem{econ}
 Rafael~R. Testa.
