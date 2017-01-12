@@ -17,6 +17,13 @@ Franz Baader.
 \newblock What’s new in {D}escription {L}ogics.
 \newblock {\em Informatik-Spektrum}, 34(5):434--442, 2011.
 
+\bibitem{dl}
+Franz Baader, Diego Calvanese, Deborah~L. McGuinness, Daniele Nardi, and
+  Peter~F. Patel-Schneider, editors.
+\newblock {\em The Description Logic Handbook: Theory, Implementation, and
+  Applications}.
+\newblock Cambridge University Press, New York, NY, USA, 2003.
+
 \bibitem{small}
 Franz Baader, Carsten Lutz, and Anni-Yasmin Turhan.
 \newblock Small is {A}gain {B}eautiful in {D}escription {L}ogics.
