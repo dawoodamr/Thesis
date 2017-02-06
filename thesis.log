@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.11.3)  11 JAN 2017 21:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.11.3)  5 FEB 2017 17:39
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -716,57 +716,52 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 
  (contraction.tex
 Chapter 3.
-[12
+) [12
 
 
 
-] [13]
+] [13
+
+] [14]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 82.
- [14] [15] [16]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 190.
+put line 192.
+ [15] [16] [17]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 300.
 
- ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-Overfull \hbox (3.86201pt too wide) in paragraph at lines 193--194
+Overfull \hbox (3.86201pt too wide) in paragraph at lines 303--304
 \T1/lmr/m/n/10.95 that takes a set of ker-nels, and re-turns a min-i-mal hit-ti
 ng set (min-i-mal in both set-containment
  []
 
-[17] [18]
-Overfull \hbox (17.52179pt too wide) in paragraph at lines 255--256
-\OML/lmm/m/it/10.95 Mammal; Mammal \OMS/lmsy/m/n/10.95 v \OML/lmm/m/it/10.95 An
-imal\OMS/lmsy/m/n/10.95 g$\T1/lmr/m/n/10.95 , the new $\OMS/lmsy/m/n/10.95 T$ \
-T1/lmr/m/n/10.95 af-ter adding all sub-sump-tions would be $\OMS/lmsy/m/n/10.95
- f\OML/lmm/m/it/10.95 Human \OMS/lmsy/m/n/10.95 v
- []
-
-[19] [20] <example1.jpg, id=425, 363.60844pt x 451.6875pt>
+[18] [19] [20] [21] <example1.jpg, id=431, 363.60844pt x 451.6875pt>
 File: example1.jpg Graphic file (type jpg)
- <use example1.jpg>
-Package pdftex.def Info: example1.jpg used on input line 303.
-(pdftex.def)             Requested size: 181.80377pt x 225.84319pt.
 
-[21 <./example1.jpg>] [22]
-Overfull \hbox (25.07228pt too wide) in paragraph at lines 366--367
+<use example1.jpg>
+Package pdftex.def Info: example1.jpg used on input line 421.
+(pdftex.def)             Requested size: 181.80377pt x 225.84319pt.
+ [22 <./example1.jpg>] [23]
+Overfull \hbox (25.07228pt too wide) in paragraph at lines 484--485
 []\T1/lmr/m/n/10.95 Since the run-ning time of ev-ery step of the con-trac-tion
  al-go-rithm start-ing from ``transform($\OMS/lmsy/m/n/10.95 T$\T1/lmr/m/n/10.9
 5 )''
  []
 
-[23] <abc-kb.jpg, id=449, 380.92313pt x 147.55125pt>
+[24] <abc-kb.jpg, id=455, 380.92313pt x 147.55125pt>
 File: abc-kb.jpg Graphic file (type jpg)
  <use abc-kb.jpg>
-Package pdftex.def Info: abc-kb.jpg used on input line 382.
+Package pdftex.def Info: abc-kb.jpg used on input line 500.
 (pdftex.def)             Requested size: 190.46109pt x 73.77544pt.
- [24 <./abc-kb.jpg>] <abcbc-kb.jpg, id=461, 240.14719pt x 246.9225pt>
+ [25 <./abc-kb.jpg>] <abcbc-kb.jpg, id=467, 240.14719pt x 246.9225pt>
 File: abcbc-kb.jpg Graphic file (type jpg)
  <use abcbc-kb.jpg>
-Package pdftex.def Info: abcbc-kb.jpg used on input line 426.
+Package pdftex.def Info: abcbc-kb.jpg used on input line 544.
 (pdftex.def)             Requested size: 120.07329pt x 123.46094pt.
 
-[25 <./abcbc-kb.jpg>] [26]) [27]
+[26 <./abcbc-kb.jpg>] [27] [28] [29]
 \openout2 = `heuristics.aux'.
 
  (heuristics.tex
@@ -774,50 +769,49 @@ Chapter 4.
 
 LaTeX Warning: Float too large for page by 48.88795pt on input line 80.
 
-[28
+[30
 
 
-
-] [29] [30]
+] [31] [32]
 LaTeX Font Info:    Try loading font information for U+euf on input line 134.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\ueuf.fd"
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-[31] [32] [33]
+[33] [34] [35]
 Underfull \hbox (badness 10000) in paragraph at lines 220--221
 
  []
 
-[34] [35]) [36] [37]
+[36] [37]) [38] [39]
 Chapter 5.
-[38
+[40
 
 
-] (thesis.bbl) [39
+] (thesis.bbl) [41
 
 
 ]
 Appendix A.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 143.
-[40
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 653.
+[42
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 143.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 653.
  (thesis.aux (introduction.aux) (background.aux) (contraction.aux)
 (heuristics.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 143.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 143.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 653.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 653.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: EFFD6EAC4B9711C6F61D8B927593A443;1989.
  ) 
 Here is how much of TeX's memory you used:
- 9631 strings out of 493334
- 140835 string characters out of 3139258
+ 9633 strings out of 493334
+ 140849 string characters out of 3139258
  244780 words of memory out of 3000000
  12766 multiletter control sequences out of 15000+200000
  106185 words of font info for 83 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,8n,41p,1170b,443s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 44i,8n,41p,1075b,485s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/M
 iKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files/MiKTeX 2.9/fonts/e
 nc/dvips/lm/lm-mathit.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ma
@@ -840,9 +834,9 @@ b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Program File
 s/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts
 /type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
 fonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (49 pages, 566134 bytes).
+Output written on thesis.pdf (51 pages, 570598 bytes).
 PDF statistics:
- 679 PDF objects out of 1000 (max. 8388607)
- 174 named destinations out of 1000 (max. 500000)
+ 689 PDF objects out of 1000 (max. 8388607)
+ 176 named destinations out of 1000 (max. 500000)
  280 words of extra memory for PDF output out of 10000 (max. 10000000)
 

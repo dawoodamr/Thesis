@@ -21,24 +21,24 @@
 \contentsline {chapter}{\numberline {3}Kernel contraction}{12}{chapter.3}
 \contentsline {section}{\numberline {3.1}What are kernels?}{13}{section.3.1}
 \contentsline {section}{\numberline {3.2}Computing kernels}{14}{section.3.2}
-\contentsline {section}{\numberline {3.3}Previous work}{14}{section.3.3}
-\contentsline {section}{\numberline {3.4}Minimal change}{16}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Hitting set approach}{16}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.3}Previous work}{15}{section.3.3}
+\contentsline {section}{\numberline {3.4}Minimal change}{17}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Hitting set approach}{17}{subsection.3.4.1}
 \contentsline {subsection}{\numberline {3.4.2}Graph approach}{18}{subsection.3.4.2}
-\contentsline {subsubsection}{Main algorithm}{18}{section*.15}
-\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{19}{section*.16}
-\contentsline {subsubsection}{Transformation analysis}{19}{section*.17}
+\contentsline {subsubsection}{Main algorithm}{19}{section*.15}
+\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{20}{section*.16}
+\contentsline {subsubsection}{Transformation analysis}{20}{section*.17}
 \contentsline {subsubsection}{Graph kernel contraction}{21}{section*.18}
-\contentsline {subsubsection}{Reduction to network flow problem}{22}{section*.20}
+\contentsline {subsubsection}{Reduction to network flow problem}{23}{section*.20}
 \contentsline {subsubsection}{A Sample Run}{24}{section*.21}
 \contentsline {subsubsection}{The limitations of the algorithm}{25}{section*.23}
-\contentsline {subsubsection}{Analysis of the graph algorithm}{26}{section*.25}
-\contentsline {subsection}{\numberline {3.4.3}How to generate kernels?}{26}{subsection.3.4.3}
-\contentsline {subsection}{\numberline {3.4.4}What incision function to use?}{27}{subsection.3.4.4}
-\contentsline {chapter}{\numberline {4}Heuristics for contraction}{28}{chapter.4}
-\contentsline {section}{\numberline {4.1}Greedy Contraction}{28}{section.4.1}
-\contentsline {section}{\numberline {4.2}Localization}{29}{section.4.2}
-\contentsline {section}{\numberline {4.3}Specificity}{32}{section.4.3}
-\contentsline {chapter}{\numberline {5}Conclusion}{38}{chapter.5}
-\contentsline {chapter}{Bibliography}{39}{section*.27}
-\contentsline {chapter}{Appendix \numberline {A}Code}{40}{Appendix.a.A}
+\contentsline {subsubsection}{Analysis of the graph algorithm}{27}{section*.25}
+\contentsline {subsection}{\numberline {3.4.3}How to generate kernels?}{28}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.4.4}What incision function to use?}{28}{subsection.3.4.4}
+\contentsline {chapter}{\numberline {4}Heuristics for contraction}{30}{chapter.4}
+\contentsline {section}{\numberline {4.1}Greedy Contraction}{30}{section.4.1}
+\contentsline {section}{\numberline {4.2}Localization}{31}{section.4.2}
+\contentsline {section}{\numberline {4.3}Specificity}{34}{section.4.3}
+\contentsline {chapter}{\numberline {5}Conclusion}{40}{chapter.5}
+\contentsline {chapter}{Bibliography}{41}{section*.27}
+\contentsline {chapter}{Appendix \numberline {A}Code}{42}{Appendix.a.A}
