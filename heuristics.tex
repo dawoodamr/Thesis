@@ -1,13 +1,13 @@
 \chapter{Heuristics for contraction}
-Considering algorithms that guarantee contraction with minimum change is not always enough for optimal contraction. So far, we have considered minimal contraction by trying to find the smallest \textit{giveUpSet}. However, we haven't considered the significance of the subsumption hierarchy of $\mathcal{EL}$ in contracting a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
+Considering algorithms that guarantee minimum change during contraction is not always enough to achieve optimal contraction. So far, we have considered minimal contraction by trying to find the smallest \textit{giveUpSet}. However, we haven't considered the significance of the subsumption hierarchy of $\mathcal{EL}$ in contracting a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
 
-According to \textit{localization} and \textit{specificity} heuristics, we can prefer to remove a certain set of beliefs to another, even if it is bigger or equal in size. We can say that it is ``semantically better'' to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. Also, it is better to remove beliefs about specific concepts than general ones. These two selection heuristics, localization and specificity, can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one. They can also be used on their own regardless of the size of the \textit{giveUpSets}.
+According to \textit{localization} and \textit{specificity} heuristics\footnote{These heuristics will be explained shortly.}, we can prefer to remove a certain set of beliefs to another, even if it is of bigger or equal size. We can say that it is ``semantically better'' to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. Also, it is better to remove beliefs about specific concepts than general ones. These two selection heuristics, localization and specificity, can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one. They can also be used on their own regardless of the size of the \textit{giveUpSets}.
 
 Before discussing localization and specificity, there is another approach that is worth mentioning. That approach is the \textit{Greedy} approach that was introduced in \cite{zwei}. It does not account for the subsumption relationship between $\mathcal{EL}$ concepts (it is language independent). It only cares about the intersection between kernels. After explaining how it works, we will turn to the two language-dependent heuristics and see how they work.
 
 
 \section{Greedy Contraction}
-The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following step). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
+The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears the most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following steps). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
 
 \begin{algorithm}
 \caption{Greedy Selection}
@@ -15,12 +15,14 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \begin{algorithmic}[1]
 \Function {GreedyContract}{$kernelset, beliefs$}
 \State $initializeValidKernels(kernelset)$
-\State $initializeBeliefOccurances(beliefs)$
-\State $computeOccurances(kernelset, beliefs)$
+\State $initializeBeliefOccurrences(beliefs)$
+\State $computeOccurrences(kernelset, beliefs)$
 \State \Return $selectMaxBeliefs($kernelset, beliefs$)$
 \EndFunction
 \end{algorithmic}
+\end{algorithm}
 
+\begin{algorithm}
 \begin{algorithmic}[1]
 \Function{initializeValidKernels}{$kernelset$}
 \State $validKernels = 0$ $// global \: variable$
@@ -32,7 +34,7 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \end{algorithmic}
 
 \begin{algorithmic}[1]
-\Function{initializeBeliefOccurances}{$beliefs$}
+\Function{initializeBeliefOccurrences}{$beliefs$}
 \For{$i = 1$ to $size(beliefs)$}
 \State $occurs[i] = 0$  $// global \: array$
 \EndFor
@@ -40,7 +42,7 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \end{algorithmic}
 
 \begin{algorithmic}[1]
-\Function{computeOccurances}{$kernelset, beliefs$}
+\Function{computeOccurrences}{$kernelset, beliefs$}
 \For{$i=1$ to $size(beliefs)$}
 \For{$j=1$ to $size(kernelset)$}
 \If{$kernelset[j].contains(beliefs[i])$}
@@ -69,9 +71,10 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \If{$kernelset[i].contains(beliefs[maxIndex])$}
 \State $validKernel[i] = 0$
 \State $validKernels = validKernels - 1$
+\State updateOccurrences($kernelset[i], beliefs$)
 \EndIf
 \EndFor
-\State $occurs[beliefIndex] = 0$
+\State $occurs[maxIndex] = 0$
 \State $giveUpSet = giveUpSet \cup \lbrace beliefs[maxIndex] \rbrace$
 \EndWhile
 \State \Return $giveUpSet$
@@ -79,12 +82,34 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction algorithm to remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs to be removed. 
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Function{updateOccurrences}{$kernel, beliefs$}
+\For{$i=1$ to $size(kernel)$}
+\State $removeOccurances(beliefs, kernel[i])$
+\EndFor
+\EndFunction
+\end{algorithmic}
 
-The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$ and the size of $kernelset$ is $n$, then the worst-case time complexity is $O(n^2 + nm)$ (or $O(n(n+m))$).
+\begin{algorithmic}[1]
+\Function{removeOccurrences}{$beliefs, belief$}
+\For{$i=1$ to $size(beliefs)$}
+\If{$beliefs[i] == belief$}
+\State $occurs[i] = occurs[i] - 1$
+\EndIf
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs (the knowledge base), it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction, which in turn will remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs that need to be removed. 
+
+The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$, the size of $kernelset$ is $n$, and the size of the biggest $kernel$ is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly enhanced by using more clever data structures to make the in-validation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster. But this is not very important now, because the greedy algorithm does not add to the optimality we are targeting in this chapter. As said before, the greedy algorithm only targets the minimality.
+
+The rest of the chapter will be dedicated to discussing other heuristics that aim at achieving more optimal results by exploiting the structure and hierarchy of the $\mathcal{EL}$ TBoxes.
 
 \section{Localization}
-When giving up beliefs, we are not confident about our knowledge of what the beliefs are related to. Removing related beliefs, or beliefs about one common concept, seems better as it only questions the knowledge about that concept. If we remove beliefs about more concepts, then we would be questioning our knowledge about those concepts. According to \cite{zwei}, it is more efficient to remove knowledge that shares concepts or roles because it means there are less areas of knowledge we are questioning.
+Giving up beliefs about a certain concept means being in doubt of this concept. The more beliefs we remove, the more concepts we become in doubt of. This can lead us to consider removing beliefs about a certain concepts rather than beliefs about many different concepts. As discussed in \cite{zwei}, it is more efficient to remove beliefs that share concepts or roles in a TBox as it means being in doubt of less number of concepts.
 
 This seems a reasonable approach as humans tend to deal with related beliefs than unrelated ones. If we try to revise our knowledge, we will probably find ourselves leaning towards focusing on beliefs that share common concepts. 
 
@@ -104,21 +129,21 @@ and we can see that there are two (5)-kernels:
 \{1, 2\} and \{3, 4\}
 \end{center}
 
-So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we question our knowledge of $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, only questions out knowledge of $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
+So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we are in doubt of our knowledge of $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, makes us in doubt only of our knowledge of $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
 
 Localization is implemented in \cite{zwei} using a graph-like approach. The algorithm operates by defining edge-like relationship between formulas and using graph connectivity and graph clustering rules to determine localized sets. 
 
 \begin{defn}
-For every two formulas $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an edge between them if they share a concept or role.
+For every two GCIs $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an edge between them if they share a concept or role.
 \end{defn}
 
 After applying that, we will end up with a graph-like structure, where some GCIs of the knowledge base are connected by edges. The most basic path in a graph is an edge, but a path can be composed of more than one edge. Generally, a path is a sequence of edges.
 
 \begin{defn}(Conncected GCIs)
-Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and formulas $Ae_1F_1e_2 ... F_{n-1}e_nB$, where $F_i$ is a formula, $e_i$ is an edge, every triple $F_ie_{i+1}F_{i+1}$ means $F_i$ and $F_{i+1}$ are connected by an edge, and $n \geq 0$.
+Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and GCIs $Ae_1G_1e_2 ... G_{n-1}e_nB$, where $G_i$ is a GCI, $e_i$ is an edge, every triple $G_ie_{i+1}G_{i+1}$ means $G_i$ and $G_{i+1}$ are connected by an edge, and $n \geq 0$.
 \end{defn}
 
-So, in the previous $\mathcal{EL}$ example, we can remove one of the following sets to contract (5):
+So, in the last $\mathcal{EL}$ example, we can remove one of the following sets to contract (5):
 \begin{itemize}
 \item \{1, 3\} (a)
 \item \{1, 4\}. (b)
@@ -131,12 +156,12 @@ For the set (a), there is an edge between (1) and (3) because they share the sam
 For the set (b), there is no edge between (1) and (4) because they don't share any concept or role. So according to the definition, (1) and (4) are not connected.
 
 \begin{defn}(Clusters)
-A node $X$ belongs to a cluster $\mathfrak{C}$ if and only if $X$ is connected to every node in $\mathfrak{C}$.
+A GCI $\mathbb{X}$ belongs to a cluster $\mathfrak{C}$ if and only if $\mathbb{X}$ is connected to every GCI in $\mathfrak{C}$.
 \end{defn}
 
 Thus, according to the definitions, the set (a) has only one cluster, as (1) and (3) are connected and belong to the same cluster. However, the set (b) has two clusters, because (1) and (4) are not connected in (b), so they belong to two different clusters.
 
-The algorithm uses the notion of clusters to identify the best \textit{giveUpSet}. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the \textit{giveUpSet}. If a \textit{giveUpSet} contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the higher number of clusters in a set the more sparse the graph is, hence the less localized the contraction is. 
+The algorithm uses the notion of clusters to identify the best \textit{giveUpSet}. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the \textit{giveUpSet}. If a \textit{giveUpSet} contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the more clusters there is in a set the more sparse the graph is, hence the less localized the contraction is. 
 
 The algorithms works on each possible \textit{giveUpSet} separately. It builds the graph-like edges between formulas in the set according to the definitions we gave. It is important that the algorithm computes the connectivity in each set separately, because two formulas might have a path between them in one set but not the other; so they would be considered connected in a set and disconnected in the other. The algorithm then counts the number of clusters. It does that for all the sets, then chooses the set with least number of clusters to be removed.
 
@@ -239,7 +264,7 @@ The algorithm we introduce now removes kernels that contain GCIs involving most 
 \caption{Building the children graph}
 \label{GraphBuild}
 \begin{algorithmic}[1]
-\Function {graphBuild}{T}
+\Function{graphBuild}{T}
 \State $children(X) = \emptyset$, for every concept X in T 
 \For{every $A \sqsubseteq B \in T$}
 \State $children(B) = children(B) \cup \{ A \}$
