@@ -1,19 +1,15 @@
 \contentsline {chapter}{Approval}{ii}{section*.1}
 \contentsline {chapter}{Abstract}{iii}{section*.3}
-\contentsline {chapter}{Dedication}{iv}{section*.5}
-\contentsline {chapter}{Acknowledgements}{v}{section*.7}
-\contentsline {chapter}{Table of Contents}{vi}{section*.9}
-\contentsline {chapter}{List of Tables}{viii}{section*.10}
-\contentsline {chapter}{List of Figures}{ix}{section*.11}
+\contentsline {chapter}{Table of Contents}{iv}{section*.5}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {chapter}{\numberline {2}Background}{3}{chapter.2}
 \contentsline {section}{\numberline {2.1}Belief change}{3}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}Epistemic states}{4}{subsection.2.1.1}
 \contentsline {subsection}{\numberline {2.1.2}Epistemic attitudes}{4}{subsection.2.1.2}
 \contentsline {subsection}{\numberline {2.1.3}Basic types of change}{5}{subsection.2.1.3}
-\contentsline {subsubsection}{Belief Expansion}{6}{section*.12}
-\contentsline {subsubsection}{Belief Contraction}{6}{section*.13}
-\contentsline {subsubsection}{Belief Revision}{7}{section*.14}
+\contentsline {subsubsection}{Belief Expansion}{6}{section*.6}
+\contentsline {subsubsection}{Belief Contraction}{6}{section*.7}
+\contentsline {subsubsection}{Belief Revision}{7}{section*.8}
 \contentsline {section}{\numberline {2.2}Description logic}{7}{section.2.2}
 \contentsline {subsection}{\numberline {2.2.1}ABox}{9}{subsection.2.2.1}
 \contentsline {subsection}{\numberline {2.2.2}TBox}{9}{subsection.2.2.2}
@@ -25,14 +21,14 @@
 \contentsline {section}{\numberline {3.4}Minimal change}{16}{section.3.4}
 \contentsline {subsection}{\numberline {3.4.1}Hitting set approach}{16}{subsection.3.4.1}
 \contentsline {subsection}{\numberline {3.4.2}Graph approach}{18}{subsection.3.4.2}
-\contentsline {subsubsection}{Main algorithm}{18}{section*.15}
-\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{19}{section*.16}
-\contentsline {subsubsection}{Transformation analysis}{19}{section*.17}
-\contentsline {subsubsection}{Graph kernel contraction}{21}{section*.18}
-\contentsline {subsubsection}{Reduction to network flow problem}{22}{section*.20}
-\contentsline {subsubsection}{A Sample Run}{24}{section*.21}
-\contentsline {subsubsection}{The limitations of the algorithm}{25}{section*.23}
-\contentsline {subsubsection}{Analysis of the graph algorithm}{26}{section*.25}
+\contentsline {subsubsection}{Main algorithm}{18}{section*.9}
+\contentsline {subsubsection}{Transforming the $TBox$ into a graph}{19}{section*.10}
+\contentsline {subsubsection}{Transformation analysis}{19}{section*.11}
+\contentsline {subsubsection}{Graph kernel contraction}{21}{section*.12}
+\contentsline {subsubsection}{Reduction to network flow problem}{22}{section*.14}
+\contentsline {subsubsection}{A Sample Run}{24}{section*.15}
+\contentsline {subsubsection}{The limitations of the algorithm}{25}{section*.17}
+\contentsline {subsubsection}{Analysis of the graph algorithm}{26}{section*.19}
 \contentsline {subsection}{\numberline {3.4.3}How to generate kernels?}{27}{subsection.3.4.3}
 \contentsline {subsection}{\numberline {3.4.4}What incision function to use?}{28}{subsection.3.4.4}
 \contentsline {chapter}{\numberline {4}Heuristics for contraction}{29}{chapter.4}
@@ -40,5 +36,4 @@
 \contentsline {section}{\numberline {4.2}Localization}{30}{section.4.2}
 \contentsline {section}{\numberline {4.3}Specificity}{35}{section.4.3}
 \contentsline {chapter}{\numberline {5}Conclusion}{40}{chapter.5}
-\contentsline {chapter}{Bibliography}{41}{section*.27}
-\contentsline {chapter}{Appendix \numberline {A}Code}{42}{Appendix.a.A}
+\contentsline {chapter}{Bibliography}{41}{section*.21}
