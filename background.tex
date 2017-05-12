@@ -126,8 +126,8 @@ Concepts and roles can be used with the help of some logical symbols to construc
 
 Logical and non-logical symbols can be used together to construct complex expressions. To get a sense of how to build complex expressions, suppose $C$ and $D$ are concepts, and $R$ is a role:
 \begin{itemize}
-\item $C \sqcap D$, $C \sqcup D$, and $\neg C$ are concepts.
-\item $\forall R.C$, and $\exists R.\top$ are concepts.
+\item $C \sqcap D$, $C \sqcup D$, and $\neg C$ are concepts (also called concept expressions).
+\item $\forall R.C$, and $\exists R.\top$ are concepts (or concept expressions).
 \end{itemize}
 
 
@@ -186,6 +186,69 @@ One of the DLs that recently became famous and attracted much attention is $\mat
 \item The top concept $\top$
 \end{itemize}
 
-One of the advantages of $\mathcal{EL}$, besides being simple and easy to use, is its polynomial-time subsumption algorithm. The subsumption problem, which is the most important problem in $\mathcal{EL}$, is actually a classification problem. The subsumption algorithm classifies the $TBox$ depending on the subsumption relation expressed by $\sqsubseteq$. The main use of the subsumption problem is to check whether a specific subsumption relation holds or not (e.g. whether $C \sqsubseteq D$ holds or not). The algorithm will be explained later on.
+One of the advantages of $\mathcal{EL}$, besides being simple and easy to use, is its polynomial-time subsumption algorithm. The subsumption problem, which is the most important problem in $\mathcal{EL}$, is actually a classification problem. The subsumption algorithm classifies the $TBox$ depending on the subsumption relation expressed by $\sqsubseteq$. It is basically checking whether a specific subsumption relation holds or not (e.g. whether $C \sqsubseteq D$ holds or not) in a given knowledge base. Checking whether a subsumption relation holds or not is also checking whether the concept (or concept expression) on the left-hand side of the subsumption relation is subsumed by the concept on the right-hand side.
 
-Throughout this study, we only consider DL knowledge bases represented in $\mathcal{EL}$. In the next chapter we look at an implementation of belief contraction using \textit{kernels} as introduced in \cite{zwei}. We will discuss some basic and general approaches as well as some more sophisticated ones. Then we will consider a language-specific approach to exploit the structure of $\mathcal{EL}$. 
+It is helpful to sketch the subsumption algorithm before moving on into the core of this study, as it will be used later on. But we will use an example to see how the algorithm can be applied. Let's assume we have a knowledge base TBox $\mathcal{T}$ that consists of only two subsumption relations:
+\begin{center}
+$\mathcal{T}$ = $\lbrace$ Haddock $\sqsubseteq$ Fish, Fish $\sqsubseteq$ Animal. $\rbrace$
+\end{center}
+The first one states that every Haddock is a Fish, and the second one states that every Fish is an Animal. Now, given that $\mathcal{T}$, we need to check that every Haddock is an Animal:
+\begin{center}
+Haddock $\sqsubseteq$ Animal.
+\end{center}
+This is not explicitly stated in $\mathcal{T}$, but we can imply it using the subsumption algorithm. The algorithm proceeds in four steps:
+\begin{enumerate}
+\item Normalize the TBox.
+\item Translate the normalized TBox into a graph.
+\item Complete the graph using completion rules.
+\item Read off the subsumption relationships from the normalized graph.
+\end{enumerate}
+We can follow the four steps and apply them one by one to our example and get the solution that we need.
+\subsubsection{Normalize the TBox}
+We can only call a TBox normalized if all the GCIs it contains are of any of the following forms:
+\begin{itemize}
+\item $A_1 \sqcap A_2 \sqsubseteq B$
+\item $A \sqsubseteq \exists r.B$
+\item $\exists r.A \sqsubseteq B$
+\end{itemize}
+where $A$, $A_1$, $A_2$, and $B$ are arbitrary concepts, and $r$ is an arbitrary role. A TBox can be normalized in polynomial time. $A \sqcap \top$ is equivalent to $A$. So, the normalized version of the $\mathcal{T}$ look like:
+\begin{center}
+$\lbrace$ Haddock $\sqcap$ $\top$ $\sqsubseteq$ Fish, Fish $\sqcap$ $\top$ $\sqsubseteq$ Animal $\rbrace$.
+\end{center}
+
+\subsubsection{Translate the normalized TBox into graph}
+The second step is to translate the TBox into a graph. This is done by creating a node that corresponds to each concept in the TBox (including $\top$), and have an edge between every pair of nodes. We use $S$ to denote the set of nodes' labels, and $R$ to denote the set of roles' labels. $S$ will contain the subsumers of a node, e.g. $S(A)$ contains $B$ if $A$ $\sqsubseteq$ $B$. Likewise, $R(A, B)$ contains $r$ if $A$ $\sqsubseteq$ $\exists r.B$. Initially, the set $S$ starts by containing the nodes and $\top$, i.e. $S(Haddock)= \lbrace Haddock, \top \rbrace$, $S(Fish) = \lbrace Fish, \top \rbrace$, and $S(Animal)= \lbrace Animal , \top \rbrace$. The set $R$ will initially be empty. The graph can be visualised in Figure \ref{hdk}. Translating the TBox into a graph can be done in polynomial time.
+
+\begin{figure}
+\centering
+\fbox{\includegraphics[scale=0.5]{Haddock-graph-with-T.jpg}}
+\caption{Graph transformation of the TBox}
+\label{hdk}
+\end{figure}
+
+\subsubsection{Complete the graph using completion rules}
+The following three rules are then used to extend the sets $S$ and $R$:
+\begin{itemize}
+\item If $(A_1 \sqcap A_2 \sqsubseteq B) \in \mathcal{T}$ and $A_1, A_2 \in S(A)$ then add $B$ to $S(A)$
+\item If $(A_1 \sqsubseteq \exists r.B) \in \mathcal{T}$ and $A_1 \in S(A)$ then add $r$ to $R(A, B)$
+\item If $(\exists r.B_1 \sqsubseteq A_1) \in \mathcal{T}$ and $B_1 \in S(B), r \in S(A, B)$ then add $A_1$ to $S(A)$ 
+\end{itemize}
+If we apply the completion rules to $\mathcal{T}$, $S$ will become as follows:
+\begin{itemize}
+\item $S(Animal)= \lbrace Animal, \top \rbrace$
+\item $S(Fish)= \lbrace Fish, \top, Animal \rbrace$
+\item $S(Haddock) = \lbrace Haddock, \top, Fish, Animal \rbrace$
+\end{itemize}
+The new graph (after the completion rules are applied) can be visualised in Figure \ref{hdk-complete}. 
+
+\begin{figure}
+\centering
+\fbox{\includegraphics[scale=0.5]{Haddock-graph-with-T-complete.jpg}}
+\caption{Completed graph of the TBox}
+\label{hdk-complete}
+\end{figure}
+
+\subsubsection{Read off the subsumption relationships}
+Now that the graph is complete, we can look at the sets $S$ and $R$ and determine whether the subsumption relationship in question holds or not. Since that subsumption relationship was $Haddock \sqsubseteq Animal$, we can look at $S(Haddock)$ and see if it contains $Animal$ or not, since the set $S(Haddock)$ contains all subsumers of $Haddock$. So, indeed, $Haddock \sqsubseteq Animal$ holds. This brief example hopefully shows a simple application of the subsumption algorithm of $\mathcal{EL}$. We didn't discuss the complexity of the algorithm in details, but it is enough to say it is polynomial in the size of the TBox. More details on the algorithm can be found in \cite{small} and \cite{new}.
+
+Now that we had a quick introduction to the basic types of belief change and the framework of AGM, as well as the $\mathcal{EL}$ language and reasoning algorithm, we can start talking about the core of this study, which is kernel contraction. Throughout this study, we only consider DL knowledge bases represented in $\mathcal{EL}$. In the next chapter we look at an implementation of belief contraction using \textit{kernels} as introduced in \cite{zwei}. We will discuss some basic and general approaches as well as some more sophisticated ones. Then we will consider a language-specific approach to exploit the structure of $\mathcal{EL}$ and discuss heuristics that will provide more meaningful solutions. 
