@@ -1,8 +1,19 @@
 \chapter{Kernel contraction}
 \label{kernel}
-Belief contraction is the process of removing beliefs from belief sets. It can be done either by selecting one  of the largest subsets of the belief set that do not logically imply the abandoned belief, or by incising all the minimal subsets that logically imply that belief; by ``incising'' we mean removing a member from the set. The latter approach is the one we are going to focus on in this study. If a set $K$ of beliefs imply a belief $\alpha$, and $K$ is the minimal such set (no proper subset of $K$ implies $\alpha$), removing one element of $K$ will guarantee that it does not imply $\alpha$. Contraction is done here by finding all such minimum subsets and removing an element from each of them. We call such minimal sets \textit{kernels}. Kernels will be discussed in more details in the coming section. But we need to go over some definitions first.
+Belief contraction is the process of removing beliefs from belief sets. It can be done by either of two ways. The first way is selecting one of the largest subsets of the belief set that do not logically imply the belief to be removed. This is called the \textit{remainder set} approach. It works by finding the largest subsets of the belief set, such that those subsets do not imply the removed belief. For example, the knowledge base:
+\begin{center}
+$\lbrace a, a \rightarrow b, b, c \rbrace$
+\end{center}
+has two remainder sets that do not logically imply $b$:
+\begin{center}
+$\lbrace a, c\rbrace, \lbrace a \rightarrow b, c\rbrace$
+\end{center}
+And they are the largest such subsets. This means that there are no larger subset of the original set that do not imply $b$. So we can choose one of them to be the new (contracted) belief set.
 
-Consider the following set:
+
+The other approach is done by incising all the minimal subsets that logically imply the removed belief; by ``incising'' we mean removing a member from the set. This second approach is the one we are going to focus on in this study. If a set $K$ of beliefs imply a belief $\alpha$, and $K$ is the minimal such set (no proper subset of $K$ implies $\alpha$), removing one element of $K$ will guarantee that it does not imply $\alpha$. Contraction is done here by finding all such minimum subsets and removing an element from each of them. We call such minimal sets \textit{kernels}. Kernels will be discussed in more details in the coming section. But we need to go over some example first.
+
+Consider the same set:
 \begin{center}
 $ \lbrace a, a \rightarrow b, b, c \rbrace $
 \end{center}
@@ -19,6 +30,8 @@ We call it a $b$-kernel. Since the kernel is a minimal subset that implies $b$, 
 $ \lbrace a, c \rbrace $ and $ \lbrace a \rightarrow b, c \rbrace $
 \end{center}
 This is how kernel contraction works. Every $b$-kernel is one way to infer $b$. To contract $b$ every kernel should be broken by removing at least one belief. 
+
+Kernel contraction can be composed of two main steps: computing kernels, and cutting them. In this chapter, we will discuss kernels and see how they can be defined formally. We will discuss briefly how to compute kernels using an algorithm called \textit{pinpointing}. Assuming we have a set of kernels that we computed, we will discuss previous work done on cutting kernels that will give us a good basis for introducing the new approaches afterwards. Then we will discuss the hitting-set approach to contraction in the context of \textit{minimal change} requirement. Last topic to be discussed in this chapter will be our new graph approach kernel contraction. The algorithm will combine the two steps of kernel contraction (computing and cutting). It will be followed by some analysis and comparisons between different examples using it.
 
 
 \section{What are kernels?}
@@ -73,7 +86,7 @@ In the worst case, this approach takes exponential time (w.r.t the size of the $
 
 
 \section{Previous work}
-We use the pinpointing algorithm to get the set of all kernels. We then need to remove one element from each kernel to perform contraction. This is the role of the incision function; it picks an element from each kernel so that it cuts through all kernels.
+We now know we can use the pinpointing algorithm to get the set of all kernels. We then need to remove one element from each kernel to perform contraction. This is the role of the incision function; it picks an element from each kernel so that it cuts through all kernels.
 In this section, we look at some of the incision function implementations discussed in \cite{zwei}. The goal of this study is to continue the work started in \cite{zwei}, and to revise some of what has already been done. 
 
 Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$ and a belief $\alpha$, ($\mathcal{T} \perp \alpha$) is the set of $\alpha$-kernels. The main contraction algorithm is shown in Algorithm \ref{MainAlgorithm}.
@@ -152,11 +165,124 @@ The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. It goes
 
 Algorithm \ref{RandomExclusionAlgorithm} has a worst-case time complexity of $O(n^2)$, where $n$ is the size of the kernel set. This is because the second main loop has another nested loop inside it, and neither of them takes more than $n$ steps to finish. 
 
+\subsection{Greedy Contraction}
+The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears the most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following steps). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
+
+\begin{algorithm}
+\caption{Greedy Selection}
+\label{GreedyAlgorithm}
+\begin{algorithmic}[1]
+\Function {GreedyContract}{$kernelset, beliefs$}
+\State $initializeValidKernels(kernelset)$
+\State $initializeBeliefOccurrences(beliefs)$ 
+\State $computeOccurrences(kernelset, beliefs)$ 
+\State \Return $selectMaxBeliefs($kernelset, beliefs$)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\State // Mark all kernels as not cut to keep track of the remaining kernels to be cut
+\Function{initializeValidKernels}{$kernelset$}
+\State $validKernels = 0$ $// global \: variable$
+\For{$i = 1$ to $size(kernelset)$}
+\State $validKernel[i] = 1$  $// global \: array$
+\State $validKernels = validKernels + 1$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\State // Create an array to count the number of kernels that include each belief
+\Function{initializeBeliefOccurrences}{$beliefs$}
+\For{$i = 1$ to $size(beliefs)$}
+\State $occurs[i] = 0$  $// global \: array$
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\State // For each belief, compute the number of kernels that include it
+\Function{computeOccurrences}{$kernelset, beliefs$}
+\For{$i=1$ to $size(beliefs)$}
+\For{$j=1$ to $size(kernelset)$}
+\If{$kernelset[j].contains(beliefs[i])$}
+\State $occurs[i] = occurs[i] + 1$
+\EndIf
+\EndFor
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\State // Select the belief that appears in biggest number of kernels, and add to giveUpSet
+\Function{selectMaxBeliefs}{$kernelset, beliefs$}
+\State $giveUpSet = \lbrace \rbrace$
+\While{$validKernels > 0$}
+\State $max = 0$
+\State $maxIndex = 0$
+
+\State // search for the belief with max number of occurrences
+\For{$i=1$ to $size(beliefs)$}
+\If{$occurs[i]>max$}
+\State $max = occurs[i]$
+\State $maxIndex = i$
+\EndIf
+\EndFor
+
+\State // add the selected belief from the containing kernels to giveUpSet and update count
+\For{$i=1$ to $size(kernelset)$}
+\If{$kernelset[i].contains(beliefs[maxIndex])$}
+\State $validKernel[i] = 0$
+\State $validKernels = validKernels - 1$
+\State updateOccurrences($kernelset[i], beliefs$)
+\EndIf
+\EndFor
+\State $occurs[maxIndex] = 0$
+\State $giveUpSet = giveUpSet \cup \lbrace beliefs[maxIndex] \rbrace$
+\EndWhile
+\State \Return $giveUpSet$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\State // disregard the given kernel from the kernels that include each belief
+\Function{updateOccurrences}{$kernel, beliefs$}
+\For{$i=1$ to $size(kernel)$}
+\State $removeOccurances(beliefs, kernel[i])$
+\EndFor
+\EndFunction
+\end{algorithmic}
+
+\begin{algorithmic}[1]
+\State // decrement the number of kernels that include the given belief
+\Function{removeOccurrences}{$beliefs, belief$}
+\For{$i=1$ to $size(beliefs)$}
+\If{$beliefs[i] == belief$}
+\State $occurs[i] = occurs[i] - 1$
+\EndIf
+\EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs (the knowledge base), it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction, which in turn will remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs that need to be removed. 
+
+The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$, the size of $kernelset$ is $n$, and the size of the biggest $kernel$ is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly enhanced by using more clever data structures to make the in-validation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster. But this is not very important now, because the greedy algorithm does not add to the optimality we are targeting in this chapter. As said before, the greedy algorithm only targets the minimality.
+
+
 \section{Minimal change}
 According to the information economy principal (minimality), in every change of the epistemic state, loss of information should be minimum\cite{econ}. This means that a system should choose an epistemic change outcome that minimizes loss of information. To satisfy the requirement of the minimum change we need an algorithm that removes the least number of GCIs while hitting all the kernels; but the kernels are nothing but sets of beliefs (GCIs). Luckily, this is exactly the \textit{minimal hitting set problem}, which already has some relatively efficient algorithms that we can use here. 
 
 \subsection{Hitting set approach}
-The minimal hitting set problem is defined as follows:
+Another (more efficient) approach to cutting kernels to perform contraction is the hitting set algorithm. The minimal hitting set problem is defined as follows:
 \begin{defn}\cite{hit}
 Given a set $S=\{s_{1}, s_{2}, ..., s_{n}\}$ of $n$ non-empty sets, a minimal hitting set $d$ is a set such that:
 \begin{center}
