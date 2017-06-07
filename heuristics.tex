@@ -1,10 +1,10 @@
 \chapter{Heuristics for contraction}
-Considering algorithms that guarantee minimum change during contraction is not always enough to achieve optimal contraction. So far, we have considered minimal contraction by trying to find the smallest \textit{giveUpSet}. However, we haven't considered the significance of the subsumption hierarchy of $\mathcal{EL}$ in contracting a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
+In this study we care about approaching optimal contraction. In the context of contraction, we can define optimality to be removing the smallest number of beliefs, or removing beliefs that make more sense to be removed together. In the last chapter, we discussed contraction algorithms that attempt to achieve optimality by trying to remove the smallest number of beliefs, which we called minimum change. However, we haven't considered the significance of the subsumption hierarchy of $\mathcal{EL}$ in choosing the beliefs to be removed from a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
 
 According to \textit{localization} and \textit{specificity} heuristics\footnote{These heuristics will be explained shortly.}, we can prefer to remove a certain set of beliefs to another, even if it is of bigger or equal size. We can say that it is ``semantically better'' to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. Also, it is better to remove beliefs about specific concepts than general ones. These two selection heuristics, localization and specificity, can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one. They can also be used on their own regardless of the size of the \textit{giveUpSets}.
 
 \section{Localization}
-Giving up beliefs about a certain concept means being in doubt of this concept. The more beliefs we remove, the more concepts we become in doubt of. This can lead us to consider removing beliefs about a certain concepts rather than beliefs about many different concepts. As discussed in \cite{zwei}, it is more efficient to remove beliefs that share concepts or roles in a TBox as it means being in doubt of less number of concepts.
+Giving up beliefs about a certain concept means being in doubt of this concept. The more beliefs we remove, the more concepts we become in doubt of. This can lead us to consider removing beliefs about a certain concept rather than beliefs about many different concepts. As discussed in \cite{zwei}, it is more efficient to remove beliefs that share concepts or roles in a TBox as it means being in doubt of less number of concepts.
 
 This seems a reasonable approach as humans tend to deal with related beliefs than unrelated ones. If we try to revise our knowledge, we will probably find ourselves leaning towards focusing on beliefs that share common concepts. 
 
@@ -64,9 +64,10 @@ The algorithms works on each possible \textit{giveUpSet} separately. It builds t
 \caption{Computing localized hit}
 \label{LocalizeContraction}
 \begin{algorithmic}[1]
+\State // Compute the number of clusters in each set and choose the least
 \Function{getLocalizedHit}{giveUpSets}
 \State $setWithLeastClusters = null$
-\State $smallestNumber = \inf$
+\State $smallestNumber = \infty$
 \For{$giveUpSet \in giveUpSets$}
 \State $numOfClusters = getNumberOfClusters(giveUpSet)$
 \If{$numOfClusters < smallestNumber$}
@@ -80,6 +81,7 @@ The algorithms works on each possible \textit{giveUpSet} separately. It builds t
 
 
 \begin{algorithmic}[1]
+\State // Compute the number of clusters
 \Function{getNumberOfClusters}{giveUpSet}
 \For{$i=1$ to $size(giveUpSet)$}
 \State $label[i]=i$
@@ -87,6 +89,7 @@ The algorithms works on each possible \textit{giveUpSet} separately. It builds t
 \For{$i=1$ to $size(giveUpSet)$}
 \State $cluster[i]=0$
 \EndFor
+\State // Label connected nodes (beliefs) similarly
 \For{$i=1$ to $size(giveUpSet)$}
 \For{$j=i+1$ to $size(giveUpSet)$}
 \If{giveUpSet[i] and giveUpSet[j] are connected}
@@ -94,9 +97,11 @@ The algorithms works on each possible \textit{giveUpSet} separately. It builds t
 \EndIf
 \EndFor
 \EndFor
+\State // Mark clusters based on used labels. Each label now represents a cluster
 \For{$i=1$ to $size(giveUpSet)$}
 \State $cluster[label[i]]=1$
 \EndFor
+\State // Calculate the number of clusters by counting the used labels
 \For{$i=1$ to $size(giveUpSet)$}
 \State $numberOfClusters = numberOfClusters + cluster[i]$
 \EndFor 
@@ -105,7 +110,7 @@ The algorithms works on each possible \textit{giveUpSet} separately. It builds t
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and then choosing the one with the smallest number.
+Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and then choosing the one with the smallest number. The time complexity of the algorithm is $O(n^3m)$, where $m$ is the number of kernels, $n$ is the size of the biggest kernel. The loop in the main function goes over the whole list of kernels, which is of size $m$, and the second function has a 3-level nested loop that goes over the kernel whose size is at most $n$ in two levels. The third level checks the connectivity of two nodes, which can take at most $n$ if it has to go over all the elements in the kernel.
 
 \section{Specificity}
 
@@ -119,6 +124,8 @@ $Vertebrate \sqsubseteq Animal$
 \caption{Simple Animal kernel}
 \label{fig:AnimalKernel}
 \end{figure}
+
+\newpage
 
 which implicitly entails
 \begin{center}
