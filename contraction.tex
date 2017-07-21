@@ -1,6 +1,6 @@
 \chapter{Kernel contraction}
 \label{kernel}
-Belief contraction is the process of removing beliefs from belief sets. It can be done by either of two ways. The first way is selecting one of the largest subsets of the belief set that do not logically imply the belief to be removed. This is called the \textit{remainder set} approach. It works by finding the largest subsets of the belief set, such that those subsets do not imply the removed belief. For example, the knowledge base:
+Belief contraction is the process of removing beliefs from belief bases. In Chapter \ref{background}, we discussed the difference between belief bases and belief sets. In this study, we perform kernel contraction on belief bases. It can be done by either of two ways. The first way is selecting subsets of the belief base that do not logically imply the belief to be removed. This is called the \textit{remainder set} approach. It works by finding the largest subsets of the belief base, such that those subsets do not imply the removed belief. For example, the knowledge base:
 \begin{center}
 $\lbrace a, a \rightarrow b, b, c \rbrace$
 \end{center}
@@ -8,7 +8,7 @@ has two remainder sets that do not logically imply $b$:
 \begin{center}
 $\lbrace a, c\rbrace, \lbrace a \rightarrow b, c\rbrace$
 \end{center}
-And they are the largest such subsets. This means that there are no larger subset of the original set that do not imply $b$. So we can choose one of them to be the new (contracted) belief set.
+And they are the largest such subsets. This means that there are no larger subset of the original set that do not imply $b$. So we can choose one of them (or, in the general case, the intersection of more than one\footnote{This is called \textit{partial meet contraction.}}) to be the new (contracted) belief base.
 
 
 The other approach is done by incising all the minimal subsets that logically imply the removed belief; by ``incising'' we mean removing a member from the set. This second approach is the one we are going to focus on in this study. If a set $K$ of beliefs imply a belief $\alpha$, and $K$ is the minimal such set (no proper subset of $K$ implies $\alpha$), removing one element of $K$ will guarantee that it does not imply $\alpha$. Contraction is done here by finding all such minimum subsets and removing an element from each of them. We call such minimal sets \textit{kernels}. Kernels will be discussed in more details in the coming section. But we need to go over some example first.
@@ -25,7 +25,7 @@ which still implies $b$. We need to prevent the resulting set of beliefs from im
 \begin{center}
 $ \lbrace a, a \rightarrow b \rbrace $
 \end{center}
-We call it a $b$-kernel. Since the kernel is a minimal subset that implies $b$, removing only one element of that kernel is enough to make it not imply $b$. The only other $b$-kernel of the original set is $\lbrace b \rbrace$; we can only break this kernel by removing $b$. Breaking the other kernel can be done either by removing $a$, or by removing $a \rightarrow b$. So the two possible resulting belief sets after contraction are:
+We call it a $b$-kernel. Since the kernel is a minimal subset that implies $b$, removing only one element of that kernel is enough to make it not imply $b$. The only other $b$-kernel of the original set is $\lbrace b \rbrace$; we can only break this kernel by removing $b$. Breaking the other kernel can be done either by removing $a$, or by removing $a \rightarrow b$. So the two possible resulting belief bases after contraction are:
 \begin{center}
 $ \lbrace a, c \rbrace $ and $ \lbrace a \rightarrow b, c \rbrace $
 \end{center}
@@ -37,7 +37,7 @@ Kernel contraction can be composed of two main steps: computing kernels, and cut
 \section{What are kernels?}
 Kernel contraction was introduced by Hansson\cite{kernel} as a variant of an older approach called ``safe contraction''\cite{safe}. In both approaches, contracting a knowledge base \textbf{K} by $\alpha$ is done by discarding beliefs that contribute to make \textbf{K} imply $\alpha$. Beliefs that contribute to make \textbf{K} imply $\alpha$ are members of some $\alpha$-kernels of \textbf{K}, and all members of every $\alpha$-kernel contribute to make \textbf{K} imply $\alpha$. In the previous example, there were two $b$-kernels: $\lbrace b \rbrace$ and $\lbrace a, a \rightarrow b \rbrace$. We need to remove at least one element from each kernel to contract the original set by $b$. We refer to the set of $\alpha$-kernels of \textbf{K} by $\textbf{K} \perp \alpha$.
 \begin{defn}(Kernel Set)
-According to \cite{hansson}, for a belief set \textbf{K} and a belief $\alpha$, $\textbf{K} \perp \alpha$ is a set such that $X \in \textbf{K} \perp \alpha$ if and only if:
+According to \cite{hansson}, for a belief base \textbf{K} and a belief $\alpha$, $\textbf{K} \perp \alpha$ is a set such that $X \in \textbf{K} \perp \alpha$ if and only if:
 \begin{enumerate}
 \item $X \subseteq \textbf{K}$,
 \item $X \vdash \alpha$, and
@@ -163,7 +163,7 @@ The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. It goes
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{RandomExclusionAlgorithm} has a worst-case time complexity of $O(n^2)$, where $n$ is the size of the kernel set. This is because the second main loop has another nested loop inside it, and neither of them takes more than $n$ steps to finish. 
+Algorithm \ref{RandomExclusionAlgorithm} has a worst-case time complexity of $O(n^2)$, where $n$ is the size of the kernel set, assuming that kernels are stored as hash tables so ``kernelset[j].contains($\alpha$)'' takes constant time. If the kernels are stored as ordered lists, the time complexity would increase to become $O(n^2 \cdot \ln m)$, where $m$ is the size of the largest kernel. If kernels are unordered lists, the time complexity is $O(n^2 \cdot m)$. The second main loop has another nested loop inside it, and neither of them takes more than $n$ steps to finish. 
 
 \subsection{Greedy Contraction}
 The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears the most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following steps). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
@@ -274,8 +274,8 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \end{algorithm}
 
 Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs (the knowledge base), it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction, which in turn will remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs that need to be removed. 
-
-The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$, the size of $kernelset$ is $n$, and the size of the biggest $kernel$ is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly enhanced by using more clever data structures to make the in-validation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster. But this is not very important now, because the greedy algorithm does not add to the optimality we are targeting in this chapter. As said before, the greedy algorithm only targets the minimality.
+	
+The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$, the size of $kernelset$ is $n$, and the size of the biggest $kernel$ is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly enhanced by using more clever data structures to make the invalidation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster.
 
 
 \section{Minimal change}
@@ -331,7 +331,7 @@ We will start by describing the algorithm in details, and then explain each of i
 
 \subsubsection{Main algorithm}
 %Every GCI of the form $C \sqsubseteq D \sqcap E$ can be decomposed into two GCIs: $C \sqsubseteq D$ and $C \sqsubseteq E$, where $C$, $D$ and $E$ are arbitrary concept expressions. 
-Given an $\mathcal{EL}$ $TBox$ $T$, and a GCI $\mathbb{A}$ (where $\mathbb{A}$ is in the form of $C \sqsubseteq D$, such that $C$ and $D$ are arbitrary concept expressions), we contract $\mathcal{T}$ by $A$ using Algorithm \ref{GraphContract}:
+Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$, and a GCI $\mathbb{A}$ (where $\mathbb{A}$ is in the form of $C \sqsubseteq D$, such that $C$ and $D$ are arbitrary concept expressions), we contract $\mathcal{T}$ by $A$ using Algorithm \ref{GraphContract}:
 
 
 \begin{algorithm}
@@ -340,12 +340,12 @@ Given an $\mathcal{EL}$ $TBox$ $T$, and a GCI $\mathbb{A}$ (where $\mathbb{A}$ i
 \begin{algorithmic}[1]
 \Function {graphContract}{$ \mathcal{T} $, $\mathbb{A}$}
 \State complete($ \mathcal{T} $)
-\State graph = transform($ \mathcal{T} $)
+\State G = transform($ \mathcal{T} $)
 \State C = $arg_{left}(\mathbb{A})$ $//$ gets the concept expression on the left side of the GCI
 \State D = $arg_{right}(\mathbb{A})$ $//$ gets the right-side concept expression
-\State paths = getPaths(graph, C, D)
-\State cutPaths(graph, paths)
-\State $ \mathcal{T} $ = de-transform(graph)
+\State paths = getPaths(G, C, D)
+\State cutPaths(G, paths)
+\State $ \mathcal{T} $ = de-transform(G)
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -633,6 +633,6 @@ If we care about selecting minimum number of beliefs to remove, then there are t
 \end{enumerate}
 The minimum hitting set problem is NP-hard. However, the algorithm we discussed in this study is a relatively efficient approximation algorithm. However, in cases where the minimum cut approach can be used, the minimum cut algorithm is probably the best and most efficient. The algorithm works by finding the max flow possible through the network build from the TBox, and then uses it to find the minimum cut.
 
-The Ford-Fulkerson maximum flow algorithm typically takes $O(E.C)$ steps to find the maximum flow, where $E$ is the number of edges and $C$ is the sum of all capacities. Since all edges in our approach has capacity 1, $C$ is equal to $E$. So the complexity of the algorithm is $O(E^2)$. After finding the maximum flow, we can find the minimum cut in $O(E)$. So the overall complexity of the algorithm is $O(E^2)$.
+The Ford-Fulkerson maximum flow algorithm typically takes $O(E \cdot C)$ steps to find the maximum flow, where $E$ is the number of edges and $C$ is the sum of all capacities. Since all edges in our approach has capacity 1, $C$ is equal to $E$. So the complexity of the algorithm is $O(E^2)$. After finding the maximum flow, we can find the minimum cut in $O(E)$. So the overall complexity of the algorithm is $O(E^2)$.
 
 In other cases where the graph approach is not applicable, the minimum hitting set algorithm is a good candidate. In the next chapter, we will also give some techniques for implementing the incision function. Some of them might be even more suitable than the minimum hitting set approach, depending on the domain and the preferences of the user.

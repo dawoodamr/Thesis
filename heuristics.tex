@@ -35,7 +35,7 @@ For every two GCIs $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an edge b
 After applying that, we will end up with a graph-like structure, where some GCIs of the knowledge base are connected by edges. The most basic path in a graph is an edge, but a path can be composed of more than one edge. Generally, a path is a sequence of edges.
 
 \begin{defn}(Conncected GCIs)
-Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and GCIs $Ae_1G_1e_2 ... G_{n-1}e_nB$, where $G_i$ is a GCI, $e_i$ is an edge, every triple $G_ie_{i+1}G_{i+1}$ means $G_i$ and $G_{i+1}$ are connected by an edge, and $n \geq 0$.
+Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and GCIs $\mathbb{A}e_1G_1e_2 ... G_{n-1}e_n\mathbb{B}$, where $G_i$ is a GCI, $e_i$ is an edge, every triple $G_ie_{i+1}G_{i+1}$ means $G_i$ and $G_{i+1}$ are connected by an edge, and $n \geq 0$.
 \end{defn}
 
 In the last $\mathcal{EL}$ example, we can remove one of the following sets to contract (5):
@@ -110,7 +110,7 @@ The algorithm works on each possible \textit{giveUpSet} separately. It builds th
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and then choosing the one with the smallest number. The time complexity of the algorithm is $O(n^3m)$, where $m$ is the number of kernels, $n$ is the size of the biggest kernel. The loop in the main function goes over the whole list of kernels, which is of size $m$, and the second function has a 3-level nested loop that goes over the kernel whose size is at most $n$ in two levels. The third level checks the connectivity of two nodes, which can take at most $n$ if it has to go over all the elements in the kernel.
+Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of clusters by first computing the number of clusters in each giveUpSet and then choosing the one with the smallest number. The time complexity of the algorithm is $O(n^3 \cdot m)$, where $m$ is the number of kernels, $n$ is the size of the biggest kernel. The loop in the main function goes over the whole list of kernels, which is of size $m$, and the second function has a 3-level nested loop that goes over the kernel whose size is at most $n$ in two levels. The third level checks the connectivity of two nodes, which can take at most $n$ if it has to go over all the elements in the kernel.
 
 \section{Specificity}
 
@@ -166,14 +166,14 @@ Now we can compute the weights for the last TBox:
 \item $Vertebrate \sqsubseteq Animal$ has weight = 2
 \end{itemize}
 
-The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $T$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
+The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $\mathcal{T}$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
 
 \begin{algorithm}
 \caption{Building the children graph}
 \label{GraphBuild}
 \begin{algorithmic}[1]
 \Function{graphBuild}{T}
-\State $children(X) = \emptyset$, for every concept X in T 
+\State $children(X) = \emptyset$, for every concept X in$\mathcal{T}$
 \For{every $A \sqsubseteq B \in T$}
 \State $children(B) = children(B) \cup \{ A \}$
 \EndFor
@@ -225,7 +225,7 @@ Now we have a graph composed of nodes and their $child$ relationship; the nodes 
 \end{algorithmic}
 \end{algorithm}
 
-Now we have every GCI in T assigned a weight relative to its level of generality. So, in every kernel we have a preference level of what to give up. Based on the weights, we will choose the sentences with less weight over the ones with more weight to remove. This preference can be used as a tie-breaker after we apply the minimal hitting set algorithm and end up with more than one minimal set. If we arrive at two minimal hitting sets for the kernels, we can compute the overall weight of each of the hitting sets and remove the GCIs in the set with less overall weight. This is shown in Algorithm \ref{RemoveSpecific}. It uses the min-hit-CUT algorithm that gets the minimum hitting sets given a kernel set. There could be more than one minimum hitting set.
+Now we have every GCI in $\mathcal{T}$ assigned a weight relative to its level of generality. So, in every kernel we have a preference level of what to give up. Based on the weights, we will choose the sentences with less weight over the ones with more weight to remove. This preference can be used as a tie-breaker after we apply the minimal hitting set algorithm and end up with more than one minimal set. If we arrive at two minimal hitting sets for the kernels, we can compute the overall weight of each of the hitting sets and remove the GCIs in the set with less overall weight. This is shown in Algorithm \ref{RemoveSpecific}. It uses the min-hit-CUT algorithm that gets the minimum hitting sets given a kernel set. There could be more than one minimum hitting set.
 
 \begin{algorithm}
 \caption{Removing specific hitting set}
@@ -251,22 +251,22 @@ Now we have every GCI in T assigned a weight relative to its level of generality
 \end{algorithmic}
 \end{algorithm}
 
-Now the CUT method in Algorithm \ref{MainAlgorithm} can be re-implemented using the algorithms introduced here to account for specificity heuristics. Given a TBox $T$ and a GCI $A$, the contraction algorithm is given in Algorithm \ref{MainAlgorithmModified}.
+Now the CUT method in Algorithm \ref{MainAlgorithm} can be re-implemented using the algorithms introduced here to account for specificity heuristics. Given a TBox $\mathcal{T}$ and a GCI $\mathbb{A}$, the contraction algorithm is given in Algorithm \ref{MainAlgorithmModified}.
 
 \begin{algorithm}
 \caption{Contraction algorithm -- modified}
 \label{MainAlgorithmModified}
 \begin{algorithmic}[1]
-\Procedure{contract}{T, A}
-\State kernelset = \Call{pinpoint}{T, A}
-\State graphBuild(T)
-\State assignWeights(T)
+\Procedure{contract}{$\mathcal{T}$, $\mathbb{A}$}
+\State kernelset = \Call{pinpoint}{$\mathcal{T}$, $\mathbb{A}$}
+\State graphBuild($\mathcal{T}$)
+\State assignWeights($\mathcal{T}$)
 \State giveUpSet = \Call{getMostSpecificHit}{kernelset}
-\State T = T / giveUpSet
+\State$\mathcal{T}$=$\mathcal{T}$/ giveUpSet
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
 The contraction algorithms in this version guarantees the minimality, then specificity, of the removed beliefs. It guarantees the minimality by reducing the selection of beliefs from the kernelset to the minimal hitting set problem. The better the performance and the optimality of the hitting set algorithms, the efficient and minimal the contraction algorithm is. If the minimal set algorithm produces more than one solution of the same size, the specificity heuristic is used as a tie-breaker. It selects the solution with more specific beliefs to be removed.
 
-The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(nl)$, where $n$ is the size of the TBox $T$ and $l$ is the depth of the subsumption graph. Since the largest value for $l$ is $n$, we can consider the worst-case time complexity to be $O(n^2)$. The algorithm works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $T$. Finally, the $getMostSpecificHit$ function takes $O(nm)$ steps in the worst case, where $n$ is the size of the TBox $T$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
+The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(n \cdot l)$, where $n$ is the size of the TBox $\mathcal{T}$ and $l$ is the depth of the subsumption graph. Since the largest value for $l$ is $n$, we can consider the worst-case time complexity to be $O(n^2)$. The algorithm works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $\mathcal{T}$. Finally, the $getMostSpecificHit$ function takes $O(n \cdot m)$ steps in the worst case, where $n$ is the size of the TBox $\mathcal{T}$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.

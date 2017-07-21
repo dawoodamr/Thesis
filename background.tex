@@ -1,4 +1,5 @@
 \chapter{Background}
+\label{background}
 Learning is one of the most interesting functions of the human mind. If we think of the human memory as a storage of beliefs, we may think of learning as the manipulation of these beliefs. In that sense, learning something new would correspond to the addition of new beliefs. But learning is not only about new things. We sometimes learn things that contradict other things we learned before. In that sense, learning could be thought of as the update or revision of beliefs. 
 
 In this chapter, we aim at explaining the context of the ideas developed in this study, and giving some background of the main building blocks of our work. We will discuss three different ways of changing beliefs and we will use the AGM framework\cite{kr} to define and explain these changes. After explaining the AGM rules that govern our approaches to rational belief change, we will explain a Description Logic called $\mathcal{EL}$, which will be used in this study as the knowledge representation language.
@@ -11,7 +12,7 @@ As the word ``change" suggests, our concern is about transitions between epistem
 
 In this study, we use the words ``belief sets" and ``epistemic state", and they are not exactly the same, although they are related; A \textbf{Belief Set} is the set of all things that an agent believe in, while an \textbf{Epistemic State} is the complete state of the agent's epistemic attitudes towards all propositions, including the ones that the agent does not believe in. Depending on the epistemological model we follow, we might consider propositions that are not in the belief set to be rejected, or we might assume that the agent neither believes in them nor rejects them. 
 
-Another important notion is the \textit{belief base}, which we use to refer to the (possibly incomplete) set of \textit{explicit} beliefs of an agent. It is different from a belief set because we typically assume that belief sets are close under logical consequence, while belief bases are not. In that sense, we say that the belief set includes some \textit{implicit} beliefs that follow from some explicit ones.
+Another important notion is the \textit{belief base}, which we use to refer to the (possibly incomplete) set of \textit{explicit} beliefs of an agent. It is different from a belief set because we typically assume that belief sets are closed under logical consequence, while belief bases are not. In that sense, we say that the belief set includes some \textit{implicit} beliefs that follow from some explicit ones.
 
 The AGM paradigm will use the notion of belief sets. Later in \ref{dl}, we will discuss Description Logics (DLs) as formalisms to express knowledge, and start using DL \textit{concepts} to represent belief bases. All following discussions about \textit{contraction} algorithms will use such representation.
 
@@ -27,7 +28,7 @@ If $C$ exists in the belief set of an agent, we say that the agent believes in $
 \subsection{Basic types of change}
 The AGM framework defines three types of belief change: \textit{revision}, \textit{expansion}, and \textit{contraction}. If one sees a flying penguin, it introduces a new belief (penguins might fly), which contradicts another belief people these days have: penguins can't fly. In this case, just accepting the new belief will make the belief system of the agent (In this case, a human) inconsistent, since two beliefs are contradicting. So revising the old beliefs, and possibly removing the belief about penguins can't fly, is the rational action humans tend to take. This is referred to as belief revision.
 
-In the case when the new belief does not contradict any of the old beliefs, the new belief is accepted without having to remove any of the old beliefs. This is called belief expansion. When a belief is removed, or given up, without accepting a new belief, we call this process belief contraction. A good example of belief contraction is to give up a belief for the sake of argument, to reach a common ground with an opponent, and argue based on this ground.
+When we add a new belief without removing old beliefs, we call this process \textit{belief expansion}. When a belief is removed, or given up, without accepting a new belief, we call this process \textit{belief contraction}. A good example of belief contraction is to give up a belief for the sake of argument, to reach a common ground with an opponent, and argue based on this ground.
 
 Before going further into details of those types of change of belief, some important notions need to be explained.
 
@@ -127,7 +128,7 @@ Concepts and roles can be used with the help of some logical symbols to construc
 Logical and non-logical symbols can be used together to construct complex expressions. To get a sense of how to build complex expressions, suppose $C$ and $D$ are concepts, and $R$ is a role:
 \begin{itemize}
 \item $C \sqcap D$, $C \sqcup D$, and $\neg C$ are concepts (also called concept expressions).
-\item $\forall R.C$, and $\exists R.\top$ are concepts (or concept expressions).
+\item $\forall R.C$, and $\exists R.\top C$ are concepts (or concept expressions).
 \end{itemize}
 
 
@@ -211,7 +212,7 @@ We can only call a TBox normalized if all the GCIs it contains are of any of the
 \item $A \sqsubseteq \exists r.B$
 \item $\exists r.A \sqsubseteq B$
 \end{itemize}
-where $A$, $A_1$, $A_2$, and $B$ are arbitrary concepts, and $r$ is an arbitrary role. A TBox can be normalized in polynomial time. $A \sqcap \top$ is equivalent to $A$. So, the normalized version of the $\mathcal{T}$ look like:
+where $A$, $A_1$, $A_2$, and $B$ are concept names, and $r$ is a role name. A TBox can be normalized in polynomial time. $A \sqcap \top$ is equivalent to $A$. So, the normalized version of the $\mathcal{T}$ look like:
 \begin{center}
 $\lbrace$ Haddock $\sqcap$ $\top$ $\sqsubseteq$ Fish, Fish $\sqcap$ $\top$ $\sqsubseteq$ Animal $\rbrace$.
 \end{center}
