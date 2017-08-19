@@ -99,6 +99,30 @@ Motivated by the concept of minimal change, the last postulate states that if $A
 \item[(K $-$ 8)] If $A \notin K^{-}_{A \& B}$, then $K^{-}_{A \& B} \subseteq K^{-}_{A}$.
 \end{description}
 
+These eight postulates (K $-$ 1) -- (K $-$ 8) assume that contraction of belief sets. However, in this study we are investigating the contraction of belief bases. 
+
+In \cite{hansson}, Hansson declared that an operator for $A$ is a kernel contraction (kernels will be explained later) if and only if it satisfies the postulates of \textit{success}, \textit{inclusion}, \textit{core-retainment}, and \textit{uniformity}. We are discussing these postulates because they are more applicable in our investigation of kernel contraction. They are explained in \cite{hansson} as follows (the symbol $\div$ denotes contraction, e.g. $K^{-}_{A}$ is equivalent to $K \div A$):
+
+\begin{description}
+\item[Success] If $\alpha \notin Cn(\emptyset)$, then $\alpha \notin Cn(A \div \alpha)$.
+\end{description}
+This is similar to \textbf{(K $-$ 4)}.
+
+\begin{description}
+\item[Inclusion] $A \div \alpha \subseteq A$.
+\end{description}
+This is similar to \textbf{(K $-$ 2)}.
+
+\begin{description}
+\item[Core-retainment] If $\beta \in A$ and $\beta \notin A \div \alpha$, then there is a set $A'$ such that $A' \subseteq A$ and that $\alpha \notin Cn(A')$ but $\alpha \in Cn(A' \cup \{ \beta \})$.
+\end{description}
+This implies that only sentences that contribute to making $A$ imply $\alpha$ can be removed during contraction, and nothing else. 
+
+\begin{description}
+\item[Uniformity] If it holds for all subsets $A'$ of $A$ that $\alpha \in Cn(A')$ if and only if $\beta \in Cn(A')$, then $A \div \alpha = A \div \beta$.
+\end{description}
+This is similar to \textbf{(K $-$ 6)}.
+
 \subsubsection{Belief Revision}
 Revision is different from expansion and contraction, as it is considered to be \textit{non-monotonic}. New beliefs are added with -possibly- some of the old beliefs removed. Revision takes place when the attitude is changed from accepting to rejecting or from rejecting to accepting. We can think of revision as a combination of both contraction and expansion. The revision function $*$ is a function from a belief set $K$ and a sentence $A$ to a belief set $K^{*}_{A}$. If $-A \in K$, then $K^{*}_{A} = (K^{-}_{-A})^{+}_{A}$.
 

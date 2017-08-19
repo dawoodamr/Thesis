@@ -581,40 +581,28 @@ So it seems that the limitations of this algorithm are only due to the differenc
 
 
 \subsubsection{Analysis of the graph algorithm}
-It is important to be able to measure the correctness of the solution we get by running the algorithm. The AGM framework provides a set of rationality postulates for contraction that we use for this purpose. Let's see whether the algorithm satisfies each of those postulates. 
+The analysis we refer to here is with respect to rationality. It is important to be able to measure the correctness of the solution we get from running the algorithm. Correctness could be measured by the rationality postulates that are expected to govern kernel contraction. We will examine each of the four postulates that Hansson mentioned in \cite{hansson} and see if the algorithm actually satisfies all of them.
 
 \begin{description}
-\item[(K $-$ 1)] For any sentence $A$ and any belief set $K$, $K^{-}_{A}$ is a belief set.
+\item[Success] If $\alpha \notin Cn(\emptyset)$, then $\alpha \notin Cn(A \div \alpha)$.
 \end{description}
-Since the algorithm only removes edges (or GCIs), the remaining set of edges still represent a set of GCIs, which is a belief set.
+Since according to the definitions of kernels, each kernel is one way to imply $\alpha$, and since we are incising all kernels (all paths), then the new set cannot not imply $\alpha$. So this postulate is satisfied.
+
 \begin{description}
-\item[(K $-$ 2)] $K^{-}_{A} \subseteq K$. 
+\item[Inclusion] $A \div \alpha \subseteq A$.
 \end{description}
-This is also satisfied as the new set is obtained by only removing GCIs.
+Since we are not adding any extra beliefs, and assuming $A$ is the normalized version of the TBox, then this postulate is also satisfied. It is safe to assume that $A$ is the normalized TBox because normalization does not change the belief set (or the epistemic state) of the agent, but it only changes the belief base by putting the beliefs in a form easier to contract.
+
 \begin{description}
-\item[(K $-$ 3)] If $A \notin K$, then $K^{-}_{A} = K$. 
+\item[Core-retainment] If $\beta \in A$ and $\beta \notin A \div \alpha$, then there is a set $A'$ such that $A' \subseteq A$ and that $\alpha \notin Cn(A')$ but $\alpha \in Cn(A' \cup \{ \beta \})$.
 \end{description}
-If the algorithm is given a GCI that is not in the set, the source and sink nodes will not be in the graph. In this case, the minimum cut algorithm will not have any flow and will not remove any edges. So, the set will remain the same after contraction.
+This postulate is also satisfied because we are only removing beliefs that contribute to the contracted belief, as the minimum cut actually represents the smallest set of sentences that can be removed to contract the knowledge by $\alpha$ (\textit{minimum change}).
+
 \begin{description}
-\item[(K $-$ 4)] If not $\vdash A$, then $A \notin K^{-}_{A}$. 
+\item[Uniformity] If it holds for all subsets $A'$ of $A$ that $\alpha \in Cn(A')$ if and only if $\beta \in Cn(A')$, then $A \div \alpha = A \div \beta$.
 \end{description}
-If a GCI is given the algorithm, the remaining set after contraction will not contain this GCI, because the edge between both sides of the GCI will be removed. By having the edge removed, the transformation of the graph into a TBox will not create such GCI.
-\begin{description}
-\item[(K $-$ 5)] If $A \in K$, then $K \subseteq (K^{-}_{A})^{+}_{A}$.
-\end{description}
-This is called the recovery postulate. This is not satisfied by the algorithm. The reason for this is that if a GCI is contracted by the algorithm, this can sometimes involve removing some edges along the path from the source node to the sink node. Adding the GCI back to the new set will not trigger the introduction of those other edges that were removed.
-\begin{description}
-\item[(K $-$ 6)] If $\vdash A \leftrightarrow B$, then $K^{-}_{A} = K^{-}_{B}$.
-\end{description}
-This is trivially satisfied, because in $\mathcal{EL}$ two GCIs are equivalent if and only if they are exactly the same.
-\begin{description}
-\item[(K $-$ 7)] $K^{-}_{A} \cap K^{-}_{B} \subseteq K^{-}_{A \& B}$.
-\end{description}
-The algorithm contracts only one belief at a time. If we would like to contract something like $(A \& B)$, we would do it by either contracting $A$ or contracting $B$ (contracting $(A \& B)$ is the same as contracting one of them). And since contraction is monotonic (it only removes GCIs), the set resulting from contracting $A$ cannot be bigger than the original, and same with $B$. Thus, the intersection of both of them cannot be bigger than one of them (as no other GCIs were introduced).
-\begin{description}
-\item[(K $-$ 8)] If $A \notin K^{-}_{A \& B}$, then $K^{-}_{A \& B} \subseteq K^{-}_{A}$.
-\end{description}
-If $A$ is not present after contracting $(A \& B)$, it means that contraction of $(A \& B)$ was done by contracting $A$. In this case, the remaining set is the same for both contractions.
+Given the semantics of $\mathcal{EL}$, two GCIs can be equivalent if and only if they are exactly the same. So this requirement is trivially achieved.
+
 
 \subsection{How to generate kernels?}
 So far, we have discussed two ways for generating all kernels:
