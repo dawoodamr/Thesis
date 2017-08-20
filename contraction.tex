@@ -537,17 +537,17 @@ $\mathcal{T} = \lbrace B \sqsubseteq C \rbrace$.
 \subsubsection{The limitations of the algorithm}
 The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) might introduces further complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
 \begin{center}
-$\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C \rbrace$
+$\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, B \sqcap C \sqsubseteq D \rbrace$
 \end{center}
 we can see that it entails
 \begin{center}
-$A \sqsubseteq B \sqcap C$.
+$A \sqsubseteq D$.
 \end{center}
-If we want to contract the TBox by $A \sqsubseteq B \sqcap C$, we would look for its kernels and remove a statement from each. In this example we have only one kernel:
+If we want to contract the TBox by $A \sqsubseteq D$, we would look for its kernels and remove a statement from each. In this example we have only one kernel:
 \begin{center}
-$\lbrace A \sqsubseteq B, A \sqsubseteq C \rbrace$.
+$\lbrace A \sqsubseteq B, A \sqsubseteq C, B \sqcap C \sqsubseteq D \rbrace$.
 \end{center}
-So removing one of the two GCIs is enough to give up $A \sqsubseteq B \sqcap C$. Contracting it using our graph approach works as follows:
+So removing one of the three GCIs is enough to give up $A \sqsubseteq D$. Contracting it using our graph approach works as follows:
 
 \begin{enumerate}
 \item complete($\mathcal{T}$). 
@@ -558,14 +558,14 @@ After transforming the TBox into a graph, it will look like the graph in Figure 
 \begin{figure}
 \centering
 \fbox{\includegraphics[scale=0.5]{abcbc-kb.jpg}}
-\caption{Graph representing TBox $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, A \sqsubseteq B \sqcap C \rbrace $}
+\caption{Graph representing TBox $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, A \sqsubseteq B \sqcap C, B \sqcap C \sqsubseteq D \rbrace $}
 \label{fig:abcbc-kb}
 \end{figure}
 
-\item getPaths(graph, $A$, $B \sqcap C$) will get all paths between $A$ and $B \sqcap C$. There is only one such path, which is the edge between them. So cutting this edge would be the only possible outcome of the algorithm.
+\item getPaths(graph, $A$, $D$) will get all paths between $A$ and $D$. There is only one such path, which is $A -- B \sqcap C -- D$. So removing one of these two edges is the only possible outcomes of the algorithm.
 \end{enumerate}
 
-This last step is where the algorithm fails. It finds only one of the kernels because it does not recognize that the two parallel edges from A to B and C actually form another kernel. This is because a kernel in our graph approach can only be represented as a path. The conjunction symbol $\sqcap$ has a different meaning, and is not analogous to the path notion. However, the algorithm worked with the previous example because the GCI we tried to remove was the result of applying the transitivity property of the subsumption symbol ($\sqsubseteq$) to two other GCIs and they together were represented by a path in the graph representation.
+This last step is where the algorithm fails. It finds only one of the kernels because it does not recognize that the two parallel edges from $A$ to $B$ and $C$ actually form another kernel. This is because a kernel in our graph approach can only be represented as a path. The conjunction symbol $\sqcap$ has a different meaning, and is not analogous to the path notion. However, the algorithm worked with the previous example because the GCI we tried to remove was the result of applying the transitivity property of the subsumption symbol ($\sqsubseteq$) to two other GCIs and they together were represented by a path in the graph representation.
 
 Similarly, we can argue that the algorithm also fails when the existential quantification symbol ($\exists$) is used. For example, the following TBox:
 \begin{center}
