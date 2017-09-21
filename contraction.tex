@@ -1,19 +1,19 @@
 \chapter{Kernel contraction}
 \label{kernel}
-Belief contraction is the process of removing beliefs from belief bases. In Chapter \ref{background}, we discussed the difference between belief bases and belief sets. In this study, we perform kernel contraction on belief bases. It can be done by either of two ways. The first way is selecting subsets of the belief base that do not logically imply the belief to be removed. This is called the \textit{remainder set} approach. It works by finding the largest subsets of the belief base, such that those subsets do not imply the removed belief. For example, the knowledge base:
+Belief contraction is the process of removing beliefs from belief bases. In Chapter \ref{background}, we discussed the difference between belief bases and belief sets. In this study, we perform kernel contraction on belief bases. It can be done in either of two ways. The first way is computing subsets of the belief base that do not logically imply the belief to be removed. This is called the \textit{remainder set} approach. It works by finding the maximal subsets of the belief base that do not imply the removed belief. For example, the knowledge base:
 \begin{center}
 $\lbrace a, a \rightarrow b, b, c \rbrace$
 \end{center}
-has two remainder sets that do not logically imply $b$:
+has two maximal subsets that do not logically imply $b$:
 \begin{center}
 $\lbrace a, c\rbrace, \lbrace a \rightarrow b, c\rbrace$
 \end{center}
-And they are the largest such subsets. This means that there are no larger subset of the original set that do not imply $b$. So we can choose one of them (or, in the general case, the intersection of more than one\footnote{This is called \textit{partial meet contraction.}}) to be the new (contracted) belief base.
+So we can choose one of them (or, in the general case, the intersection of more than one\footnote{This is called \textit{partial meet contraction.}}) to be the new (contracted) belief base.
 
 
-The other approach is done by incising all the minimal subsets that logically imply the removed belief; by ``incising'' we mean removing a member from the set. This second approach is the one we are going to focus on in this study. If a set $K$ of beliefs imply a belief $\alpha$, and $K$ is the minimal such set (no proper subset of $K$ implies $\alpha$), removing one element of $K$ will guarantee that it does not imply $\alpha$. Contraction is done here by finding all such minimum subsets and removing an element from each of them. We call such minimal sets \textit{kernels}. Kernels will be discussed in more details in the coming section. But we need to go over some example first.
+The other approach is done by incising all the minimal subsets that logically imply the removed belief; by ``incising'' we mean removing a member from the set. This second approach is the one we are going to focus on in this study. If a set \textbf{K} of beliefs implies a belief $\alpha$, and \textbf{K} is the minimal such set (no proper subset of \textbf{K} implies $\alpha$), removing one element of \textbf{K} produces a set that does not imply $\alpha$. Contraction is done here by finding all such minimum subsets and removing an element from each of them. We call such minimal sets \textit{kernels}. Kernels will be discussed in more detail in section \ref{kernels-def}. We will look at an example first.
 
-Consider the same set:
+Given the same set:
 \begin{center}
 $ \lbrace a, a \rightarrow b, b, c \rbrace $
 \end{center}
@@ -29,29 +29,27 @@ We call it a $b$-kernel. Since the kernel is a minimal subset that implies $b$, 
 \begin{center}
 $ \lbrace a, c \rbrace $ and $ \lbrace a \rightarrow b, c \rbrace $
 \end{center}
-This is how kernel contraction works. Every $b$-kernel is one way to infer $b$. To contract $b$ every kernel should be broken by removing at least one belief. 
+This is how kernel contraction works. Every $b$-kernel is one way to infer $b$. To contract $b$, we pick an element from each kernel and remove the picked elements from the original belief set.
 
-Kernel contraction can be composed of two main steps: computing kernels, and cutting them. In this chapter, we will discuss kernels and see how they can be defined formally. We will discuss briefly how to compute kernels using an algorithm called \textit{pinpointing}. Assuming we have a set of kernels that we computed, we will discuss previous work done on cutting kernels that will give us a good basis for introducing the new approaches afterwards. Then we will discuss the hitting-set approach to contraction in the context of \textit{minimal change} requirement. Last topic to be discussed in this chapter will be our new graph approach kernel contraction. The algorithm will combine the two steps of kernel contraction (computing and cutting). It will be followed by some analysis and comparisons between different examples using it.
+Kernel contraction can be composed of two main steps: computing kernels, and cutting them. In this chapter, we will discuss kernels and see how they can be defined formally. We will discuss briefly how to compute kernels using an algorithm called \textit{pinpointing}. Assuming we have a set of kernels that we computed, we will discuss previous work done on cutting kernels that will give us a good basis for introducing the new approaches afterwards. Then we will discuss the hitting-set approach to contraction in the context of the \textit{minimal change} requirement. The last topic to be discussed in this chapter will be our new graph approach to kernel contraction. The algorithm will combine the two steps of kernel contraction (computing and cutting). The algorithm description will be followed by some analysis and comparisons between different examples using it.
 
 
 \section{What are kernels?}
-Kernel contraction was introduced by Hansson\cite{kernel} as a variant of an older approach called ``safe contraction''\cite{safe}. In both approaches, contracting a knowledge base \textbf{K} by $\alpha$ is done by discarding beliefs that contribute to make \textbf{K} imply $\alpha$. Beliefs that contribute to make \textbf{K} imply $\alpha$ are members of some $\alpha$-kernels of \textbf{K}, and all members of every $\alpha$-kernel contribute to make \textbf{K} imply $\alpha$. In the previous example, there were two $b$-kernels: $\lbrace b \rbrace$ and $\lbrace a, a \rightarrow b \rbrace$. We need to remove at least one element from each kernel to contract the original set by $b$. We refer to the set of $\alpha$-kernels of \textbf{K} by $\textbf{K} \perp \alpha$.
-\begin{defn}(Kernel Set)
-According to \cite{hansson}, for a belief base \textbf{K} and a belief $\alpha$, $\textbf{K} \perp \alpha$ is a set such that $X \in \textbf{K} \perp \alpha$ if and only if:
+\label{kernels-def}
+Kernel contraction was introduced by Hansson \cite{kernel} as a variant of an older approach called ``safe contraction''\cite{safe}. In both approaches, contracting a knowledge base \textbf{K} by $\alpha$ is done by discarding beliefs that contribute to making \textbf{K} imply $\alpha$. Beliefs that contribute to making \textbf{K} imply $\alpha$ are members of some $\alpha$-kernel of \textbf{K}, and all members of every $\alpha$-kernel contribute to making \textbf{K} imply $\alpha$. In the previous example, there were two $b$-kernels: $\lbrace b \rbrace$ and $\lbrace a, a \rightarrow b \rbrace$. We need to remove at least one element from each kernel to contract the original set by $b$. We denote the set of $\alpha$-kernels of \textbf{K} by $\textbf{K} \perp \alpha$.
+\begin{defn}(Kernel Set \cite{hansson})
+For a belief base \textbf{K} and a belief $\alpha$, $\textbf{K} \perp \alpha$ is the set such that $X \in \textbf{K} \perp \alpha$ if and only if:
 \begin{enumerate}
 \item $X \subseteq \textbf{K}$,
 \item $X \vdash \alpha$, and
 \item if $Y \subset X$ then $Y \nvdash \alpha$.
 \end{enumerate}
-$\textbf{K} \perp \alpha$ is a kernel set that contains all $\alpha$-kernels of \textbf{K}.
 \end{defn}
-Kernels are the smallest subsets of the knowledge base that imply a specific belief. Therefore, in order to give up that belief, every one of those kernels needs to be incised. If those kernels are not ``minimal'', they might contain some beliefs that do not contribute to make the kernel imply that specific belief. For example, in $\lbrace \alpha, \beta \rbrace$, $\beta$ is a belief that does not contribute to make the set imply $\alpha$. In that case, removing $\beta$ only would not help in giving up $\alpha$. 
 
-So, because of the minimality of the kernels, every belief in the kernel is significant to implying the belief that we want to give up ($\alpha$). And that's why removing one belief from a kernel is sufficient to make that kernel not imply $\alpha$. So, we use a function that cuts every kernel in the kernel set. We call such function an \textit{incision function}; it takes a set of kernels and removes an element from each kernel. 
+Because of the minimality of kernels, every belief in a kernel is significant to implying the belief that we want to give up ($\alpha$). And that's why removing one belief from a kernel is sufficient to make that kernel not imply $\alpha$. So, we use a function that cuts every kernel in the kernel set. We call such function an \textit{incision function}; it takes a set of kernels and selects an element from each kernel to be removed.
 
-The incision function is defined in \cite{hansson} as follows:
-\begin{defn}(Incision function)
-An incision function $\sigma$ is a function such that for all beliefs $\alpha$:
+\begin{defn}(Incision function \cite{kernel})
+An incision function $\sigma$ for $A$ is a function such that for all beliefs $\alpha$:
 \begin{enumerate}
 \item $\sigma (A \perp \alpha) \subseteq \bigcup (A \perp \alpha)$
 \item If $\phi \neq X \in A \perp \alpha$, then $X \cap \sigma (A \perp \alpha) \neq \phi$
@@ -66,9 +64,9 @@ $A \approx_\sigma \alpha = A \smallsetminus \sigma (A \perp \alpha)$
 
 
 \section{Computing kernels}
-Kernel contraction is about contracting knowledge bases using kernels. Kernels are the minimal subsets of the knowledge base that imply a certain consequence. The incision function can perform the contraction by cutting through all kernels of a specific belief. So, the first step in contraction is computing all kernels that imply the belief that needs to be removed. For that purpose, we use the pinpointing algorithm introduced in \cite{pin}.
+Kernel contraction is about contracting knowledge bases using kernels. Kernels are the minimal subsets of the knowledge base that imply a certain consequence. Contraction can be performed by using an incision function to cut through all kernels of a specific belief. So, the first step in kernel contraction is computing all kernels that imply the belief that needs to be removed. For that purpose, we use the pinpointing algorithm introduced in \cite{pin}.
 
-To show how the algorithm works, we use the example introduced in \cite{pin}. Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$ consisting of the following four GCI axioms:
+To show how the algorithm works, we use the example introduced in \cite{pin}. Given the following $\mathcal{EL}$ \textit{TBox} $\mathcal{T}$:
 \begin{center}
 $\mathcal{T} = \lbrace ax_1: A \sqsubseteq \exists{r}.A$, \hspace{7pt}  $ax_2: A \sqsubseteq Y$,  \hspace{7pt} $ax_3: \exists{r}.Y \sqsubseteq B$, \hspace{7pt} $ax_4: Y \sqsubseteq B \rbrace$,
 \end{center}
@@ -80,16 +78,16 @@ According to the definition of kernel sets:
 \begin{center}
 $\mathcal{T} \perp \alpha = \lbrace \lbrace ax_2, ax_4 \rbrace, \lbrace ax_1, ax_2, ax_3 \rbrace \rbrace$
 \end{center}
-The algorithm introduced in \cite{pin} computes all kernels using a modified version of the $\mathcal{EL}$ subsumption algorithm. It works by finding a monotone boolean formula called \textit{``pinpointing formula''}. The propositions of the pinpointing formula are GCIs of the $TBox$, and a propositional \textit{valuation} represents the kernels. In that sense, a valuation is a set of propositional variables that satisfy the formula, and these variables are the GCIs that constitute a kernel. So, by finding all valuations of the pinpointing formula we can get all kernels.
+The algorithm introduced in \cite{pin} computes all kernels using a modified version of the $\mathcal{EL}$ subsumption algorithm. It works by finding a monotone boolean formula called the \textit{``pinpointing formula''}. The propositions of the pinpointing formula are GCIs of the \textit{TBox}, and a propositional \textit{valuation} represents a kernel. In that sense, a valuation is a set of propositional variables that satisfy the formula, and these variables are the GCIs that constitute a kernel. So, by finding all valuations of the pinpointing formula we can get all kernels.
 
-In the worst case, this approach takes exponential time (w.r.t the size of the $TBox$) to find all kernels. This is the case when there are exponentially many kernels. However, \cite{pin} also gives a polynomial-time algorithm that computes only one kernel. Because it is not part of the scope of this study, we are not going to discuss and analyze details of the pinpointing algorithm. All that matters is the worst-case time complexity, as it will affect the complexity of the kernel contraction algorithm that uses it.
+In the worst case, this approach takes exponential time (w.r.t the size of the \textit{TBox}) to find all kernels. This is the case when there are exponentially many kernels. However, \cite{pin} also gives a polynomial-time algorithm that computes only one kernel. Because it is not part of the scope of this study, we are not going to discuss and analyze details of the pinpointing algorithm. All that matters is the worst-case time complexity, as it will affect the complexity of the kernel contraction algorithm that uses it.
 
 
 \section{Previous work}
 We now know we can use the pinpointing algorithm to get the set of all kernels. We then need to remove one element from each kernel to perform contraction. This is the role of the incision function; it picks an element from each kernel so that it cuts through all kernels.
 In this section, we look at some of the incision function implementations discussed in \cite{zwei}. The goal of this study is to continue the work started in \cite{zwei}, and to revise some of what has already been done. 
 
-Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$ and a belief $\alpha$, ($\mathcal{T} \perp \alpha$) is the set of $\alpha$-kernels. The main contraction algorithm is shown in Algorithm \ref{MainAlgorithm}.
+Given an $\mathcal{EL}$ \textit{TBox} $\mathcal{T}$ and a belief $\alpha$, ($\mathcal{T} \perp \alpha$) is the set of $\alpha$-kernels. The main contraction algorithm is shown in Algorithm \ref{MainAlgorithm}.
 
 \begin{algorithm}
 \caption{Contraction algorithm}
@@ -103,9 +101,9 @@ Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$ and a belief $\alpha$, ($\mathcal{T
 \end{algorithmic}
 \end{algorithm}
 
-``kernelset'' refers to ($\mathcal{T} \perp \alpha$), and \textit{giveUpSet} is the set of beliefs selected by the incision function (CUT) to be removed. The algorithm is straightforward. It works by generating the set of kernels using the pinpoint formula as discussed in the previous section. Then it calls the incision function that picks up beliefs from every kernel, ensuring that it cuts all kernels. The beliefs are then removed from the knowledge base, i.e. from the $TBox$.
+Here, ``kernelset'' refers to ($\mathcal{T} \perp \alpha$), and \textit{giveUpSet} is the set of beliefs selected by the incision function (CUT) to be removed. We use the function called CUT as a placeholder for any implementation of the incision function. The algorithm is straightforward. It works by generating the set of kernels using the pinpoint formula as discussed in the previous section. Then it calls the incision function, which picks up beliefs from every kernel, ensuring that it hits all kernels. The beliefs are then removed from the knowledge base, i.e. from the \textit{TBox}.
 
-This general approach can be used with different incision functions. The call to the CUT function can be replaced with a call to another implementation of the incision function. The first implementation is the most straightforward one, where it removes a random belief from every kernel. This is given in Algorithm \ref{RandomAlgorithm}.
+This general approach can be used with different incision functions. The call to the CUT function can be replaced with a call to another implementation of the incision function. The first implementation is the most straightforward one, where it removes a random belief from each kernel. This is given in Algorithm \ref{RandomAlgorithm}.
 
 \begin{algorithm}
 \caption{Random removal}
@@ -134,9 +132,9 @@ which unnecessarily removes $b$. This could happen when the algorithm selects $c
 \begin{center}
 \textit{giveUpSet} = $\lbrace c \rbrace$
 \end{center}
-seems more concise and removes less beliefs. The second solution could be obtained if the algorithm is smart enough to check if the second kernel has already been incised. 
+seems more concise and removes fewer beliefs. The second solution could be obtained with an algorithm smart enough to check if the next kernel has already been incised. 
 
-The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. It goes over all kernels, and randomly selects a formula from every kernel to be removed. Every time it selects a belief, it marks all kernels that contain that belief so that they are not considered for belief removal in the following iterations. 
+The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. Every time it selects a belief, it marks all kernels that contain that belief so that in the following iterations they are not incised. 
 
 \begin{algorithm}
 \caption{Random removal with exclusion}
@@ -148,7 +146,7 @@ The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. It goes
 \State kernelset[i].valid = true
 \EndFor \State
 \For{i=0 to size(kernelset)-1}
-\If{kernelset[i].valid == true}
+\If{kernelset[i].valid}
 \State choose a random belief $\alpha$ from kernelset[i]
 \State giveUpSet = giveUpSet $\cup$ $\lbrace \alpha \rbrace$
 \For{j=i to size(kernelset)-1}
@@ -166,51 +164,46 @@ The next algorithm (Algorithm \ref{RandomExclusionAlgorithm}) does this. It goes
 Algorithm \ref{RandomExclusionAlgorithm} has a worst-case time complexity of $O(n^2)$, where $n$ is the size of the kernel set, assuming that kernels are stored as hash tables so ``kernelset[j].contains($\alpha$)'' takes constant time. If the kernels are stored as ordered lists, the time complexity would increase to become $O(n^2 \cdot \ln m)$, where $m$ is the size of the largest kernel. If kernels are unordered lists, the time complexity is $O(n^2 \cdot m)$. The second main loop has another nested loop inside it, and neither of them takes more than $n$ steps to finish. 
 
 \subsection{Greedy Contraction}
-The greedy approach works by selecting the beliefs that appear in more kernels to be removed before those that appear in less kernels. At each step, the algorithm finds which belief appears the most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following steps). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
+The greedy approach works by selecting for removal the beliefs that appear in more kernels to be before those that appear in fewer kernels. At each step, the algorithm finds which belief appears the most in kernels and removes it, and then it forgets about those kernels (it does not consider those kernels that contain the removed belief for the following steps). This means that if a belief is selected for removal, all the kernels that contain it are already incised and no more beliefs need to be removed from these kernels.
 
 \begin{algorithm}
 \caption{Greedy Selection}
 \label{GreedyAlgorithm}
 \begin{algorithmic}[1]
-\Function {GreedyContract}{$kernelset, beliefs$}
-\State $initializeValidKernels(kernelset)$
-\State $initializeBeliefOccurrences(beliefs)$ 
-\State $computeOccurrences(kernelset, beliefs)$ 
-\State \Return $selectMaxBeliefs($kernelset, beliefs$)$
+\Function {GreedyContract}{kernelset, beliefs}
+\State initializeValidKernels(kernelset)
+\State initializeBeliefOccurrences(beliefs)
+\State computeOccurrences(kernelset, beliefs)
+\State \Return selectMaxBeliefs(kernelset, beliefs)
 \EndFunction
 \end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}
 \begin{algorithmic}[1]
 \State // Mark all kernels as not cut to keep track of the remaining kernels to be cut
-\Function{initializeValidKernels}{$kernelset$}
-\State $validKernels = 0$ $// global \: variable$
-\For{$i = 1$ to $size(kernelset)$}
-\State $validKernel[i] = 1$  $// global \: array$
-\State $validKernels = validKernels + 1$
+\Function{initializeValidKernels}{kernelset}
+\State validKernels = size(kernelset) $// global \: variable$
+\For{$i = 1$ to size(kernelset)}
+\State validKernel$[i] = 1$  $// global \: array$
 \EndFor
 \EndFunction
 \end{algorithmic}
 
 \begin{algorithmic}[1]
 \State // Create an array to count the number of kernels that include each belief
-\Function{initializeBeliefOccurrences}{$beliefs$}
-\For{$i = 1$ to $size(beliefs)$}
-\State $occurs[i] = 0$  $// global \: array$
+\Function{initializeBeliefOccurrences}{beliefs}
+\For{$i = 1$ to size(beliefs)}
+\State occurs$[i] = 0$  $// global \: array$
 \EndFor
 \EndFunction
 \end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}
 \begin{algorithmic}[1]
 \State // For each belief, compute the number of kernels that include it
-\Function{computeOccurrences}{$kernelset, beliefs$}
-\For{$i=1$ to $size(beliefs)$}
-\For{$j=1$ to $size(kernelset)$}
-\If{$kernelset[j].contains(beliefs[i])$}
-\State $occurs[i] = occurs[i] + 1$
+\Function{computeOccurrences}{kernelset, beliefs}
+\For{$i=1$ to size(beliefs)}
+\For{$j=1$ to size(kernelset)}
+\If{kernelset$[j]$.contains(beliefs[i])}
+\State occurs$[i]$ = occurs$[i] + 1$
 \EndIf
 \EndFor
 \EndFor
@@ -221,32 +214,32 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \begin{algorithm}
 \begin{algorithmic}[1]
 \State // Select the belief that appears in biggest number of kernels, and add to giveUpSet
-\Function{selectMaxBeliefs}{$kernelset, beliefs$}
-\State $giveUpSet = \lbrace \rbrace$
-\While{$validKernels > 0$}
-\State $max = 0$
-\State $maxIndex = 0$
+\Function{selectMaxBeliefs}{kernelset, beliefs}
+\State giveUpSet = $\lbrace \rbrace$
+\While{validKernels $> 0$}
+\State max $= 0$
+\State maxIndex $= 0$
 
 \State // search for the belief with max number of occurrences
-\For{$i=1$ to $size(beliefs)$}
-\If{$occurs[i]>max$}
-\State $max = occurs[i]$
-\State $maxIndex = i$
+\For{$i=1$ to size(beliefs)}
+\If{occurs$[i]>$max}
+\State max $=$ occurs$[i]$
+\State maxIndex $= i$
 \EndIf
 \EndFor
 
 \State // add the selected belief from the containing kernels to giveUpSet and update count
-\For{$i=1$ to $size(kernelset)$}
-\If{$kernelset[i].contains(beliefs[maxIndex])$}
-\State $validKernel[i] = 0$
-\State $validKernels = validKernels - 1$
-\State updateOccurrences($kernelset[i], beliefs$)
+\For{$i=1$ to size(kernelset)}
+\If{kernelset$[i].$contains(beliefs$[$maxIndex$]$)}
+\State validKernel$[i] = 0$
+\State validKernels $=$ validKernels $- 1$
+\State updateOccurrences(kernelset$[i]$, beliefs)
 \EndIf
 \EndFor
-\State $occurs[maxIndex] = 0$
-\State $giveUpSet = giveUpSet \cup \lbrace beliefs[maxIndex] \rbrace$
+\State occurs$[$maxIndex$] = 0$
+\State giveUpSet = giveUpSet $\cup$ $\lbrace$beliefs$[$maxIndex$] \rbrace$
 \EndWhile
-\State \Return $giveUpSet$
+\State \Return giveUpSet
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -254,35 +247,35 @@ The greedy approach works by selecting the beliefs that appear in more kernels t
 \begin{algorithm}
 \begin{algorithmic}[1]
 \State // disregard the given kernel from the kernels that include each belief
-\Function{updateOccurrences}{$kernel, beliefs$}
-\For{$i=1$ to $size(kernel)$}
-\State $removeOccurances(beliefs, kernel[i])$
+\Function{updateOccurrences}{kernel, beliefs}
+\For{$i=1$ to size(kernel)}
+\State removeOccurances(beliefs, kernel$[i]$)
 \EndFor
 \EndFunction
 \end{algorithmic}
 
 \begin{algorithmic}[1]
 \State // decrement the number of kernels that include the given belief
-\Function{removeOccurrences}{$beliefs, belief$}
-\For{$i=1$ to $size(beliefs)$}
-\If{$beliefs[i] == belief$}
-\State $occurs[i] = occurs[i] - 1$
+\Function{removeOccurrences}{beliefs, belief}
+\For{$i=1$ to size(beliefs)}
+\If{beliefs$[i] ==$ belief}
+\State occurs$[i] =$ occurs$[i] - 1$
 \EndIf
 \EndFor
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs (the knowledge base), it proceeds as follows: it computes the number of occurrences of every belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the $giveUpSet$ that will be returned to the main contraction, which in turn will remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs that need to be removed. 
+Algorithm \ref{GreedyAlgorithm} explains how the greedy approach for contraction works. Given a set of kernels and the set of all beliefs (the knowledge base), it proceeds as follows: it computes the number of occurrences of each belief in the kernels given, then it removes them one by one starting from the beliefs with maximum number of occurrences, until all kernels are incised. It does not actually remove the beliefs, but it collects them in the giveUpSet that will be returned in line 3 of Algorithm \ref{MainAlgorithm}, which in turn will remove them from the knowledge base. So the greedy approach can be embedded in the main algorithm as a way to choosing the beliefs that need to be removed. 
 	
-The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the $selectMaxBeliefs()$ function. If the size of $beliefs$ is $m$, the size of $kernelset$ is $n$, and the size of the biggest $kernel$ is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly enhanced by using more clever data structures to make the invalidation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster.
+The worst-case time complexity of the greedy algorithm is lower-bounded by the complexity of the ``while'' loop in the selectMaxBeliefs() function. If the size of beliefs is $m$, the size of kernelset is $n$, and the size of the biggest kernel is $k$, then the worst-case time complexity is $O(n^2 \cdot k \cdot m)$. This could be significantly improved by using more clever data structures to make the invalidation of the kernels (the step where we decrement the number of valid kernels and update the occurrences) faster.
 
 
 \section{Minimal change}
-According to the information economy principal (minimality), in every change of the epistemic state, loss of information should be minimum\cite{econ}. This means that a system should choose an epistemic change outcome that minimizes loss of information. To satisfy the requirement of the minimum change we need an algorithm that removes the least number of GCIs while hitting all the kernels; but the kernels are nothing but sets of beliefs (GCIs). Luckily, this is exactly the \textit{minimal hitting set problem}, which already has some relatively efficient algorithms that we can use here. 
+According to the information economy principal (minimality), in every change of the epistemic state, loss of information should be minimum \cite{econ}. This means that a system should choose an epistemic change outcome that minimizes loss of information. To satisfy the requirement of the minimum change we need an algorithm that removes the least number of GCIs while hitting all the kernels; but the kernels are nothing but sets of beliefs (GCIs). Luckily, this is exactly the \textit{minimal hitting set problem}, which already has some relatively efficient algorithms that we can use here. 
 
 \subsection{Hitting set approach}
-Another (more efficient) approach to cutting kernels to perform contraction is the hitting set algorithm. The minimal hitting set problem is defined as follows:
+Another (more efficient) approach to cutting kernels to perform contraction is the hitting set algorithm\footnote{We call an algorithm that solves the hitting set problem a hitting set algorithm.}. The minimal hitting set problem is defined as follows:
 \begin{defn}\cite{hit}
 Given a set $S=\{s_{1}, s_{2}, ..., s_{n}\}$ of $n$ non-empty sets, a minimal hitting set $d$ is a set such that:
 \begin{center}
@@ -290,7 +283,7 @@ $\forall_{s_{i} \in S} [ s_{i} \cap d \neq \emptyset] \wedge \nexists_{d' \subse
 \end{center}
 \end{defn}
 
-Thus, $d$ is a minimal hitting set if and only if it contains at least an element from every set, and no proper subset of it is a hitting set. In the context of kernel contraction in $\mathcal{EL}$, we can define the minimal hitting set contraction as:
+Thus, $d$ is a minimal hitting set if and only if it contains at least an element from every set, and no proper subset of it is a hitting set. In the context of kernel contraction in $\mathcal{EL}$, we can define minimal hitting set contraction as:
 \begin{defn}(Minimal hitting set contraction)
 Given a kernelset $K=\{k_{1}, k_{2}, ..., k_{n}\}$ of $n$ kernels, a minimal hitting set $giveUpSet \subset K$ is a set such that:
 \begin{center}
@@ -298,9 +291,9 @@ $\forall_{k_{i} \in K} [ k_{i} \cap giveUpSet \neq \emptyset] \wedge \nexists_{g
 \end{center}
 \end{defn}
 
-Since kernels are subsets of the $TBox$, and our goal to find a $giveUpSet$ that hits all kernels, we can use approaches to the minimal hitting set problem to solve it. There are good approximation algorithms, such as the one introduced in \cite{hit}, for the minimal hitting set problem, that are feasible in terms of running time. 
+Since kernels are subsets of the \textit{TBox}, and our goal to find a $giveUpSet$ that hits all kernels, we can use approaches to the minimal hitting set problem to solve it. Although the minimal hitting set is an NP-hard problem, there are some practically efficient algorithms, such as the one introduced in \cite{hit}, for the minimal hitting set problem, that are feasible in terms of running time. 
 
-The notion of \textit{minimality} can be interpreted in terms of set-containment or cardinality. We call a hitting set minimal in terms of caridnality if there is no smaller-sized set that is a hitting set. However, the interpretation we use here is minimality accoring to set-containment; this means a minimal hitting set is a hitting set that has no proper subset that is a hitting set. So there might exist different minimal hitting sets with different cardinalities, but none of them is subsumed by a proper subset that is a hitting set\cite{hit}. But our goal was to satisfy the information economy principal by removing hitting sets with minimum cardinality. 
+\textit{Minimal} hitting sets are different from \textit{minimum} hitting sets. The word minimal means there are no proper subsets that are hitting sets, while the word minimum means minimal and smallest in size. In other words, we call a hitting set minimum if there is no smaller-sized set that is a hitting set. However, the interpretation we use here is minimality. So there might exist different minimal hitting sets with different cardinalities, but none of them has a proper subset that is a hitting set \cite{hit}. But our goal was to satisfy the information economy principal by removing hitting sets with minimum cardinality. 
 
 For that reason, after getting all minimum hitting sets, we need to consider only the ones that are smallest in size. For the kernel set:
 \begin{center}
@@ -310,28 +303,28 @@ there are two minimal hitting sets:
 \begin{center}
 $\lbrace a \rbrace$ \hspace{1cm} and \hspace{1cm} $\lbrace b, c \rbrace$
 \end{center}
-and they are of different sizes. The following step then is to determine that the smallest of them should be selected for contraction, which is $\lbrace a \rbrace$.
+and they are of different sizes. The following step then is to find the smallest of them, which is the one to be used for contraction, which is $\lbrace a \rbrace$.
 
-We can now use one of the minimal hitting set algorithms combined with the cardinality selection step to implement contraction for a $TBox$, by implementing the minimal incision function that adopts them, to achieve minimum change (which we can call then, a \textit{minimal incision function}). We are not going to implement such a function in this study, but for now, we will assume that there is a function:
+We can now use one of the minimal hitting set algorithms combined with the cardinality selection step to implement contraction for a \textit{TBox}, by implementing the minimal incision function that adopts them, to achieve minimum change (which we can call then, a \textit{minimum incision function}). We are not going to implement such a function in this study, but for now, we will assume that there is a function
 \begin{verbatim}
  min-hit-CUT(kernelSet)
 \end{verbatim}
-that takes a set of kernels, and returns a minimal hitting set (minimal in both set-containment and cardinality) of sentences to give up. We can use this function, as if it is implemented, and may implement it in some future work.
+that takes a set of kernels, and returns a minimum hitting set of sentences to give up. Given that the minimum hitting set problem is NP-hard, the min-hit-cut function's complexity is exponential. We can use this function, as if it is implemented, and may implement it in some future work.
 
 \subsection{Graph approach}
-Now, we introduce another technique for kernel contraction in $\mathcal{EL}$ that is based on graphs. The reason why following graph approach is useful in solving contraction problem is that we are performing contraction of $TBoxes$, and they have an implicit graph-like hierarchy. 
+Now, we introduce another technique for kernel contraction in $\mathcal{EL}$ that is based on graphs. The reason following graph approach is useful in solving the contraction problem is that we are performing contraction of $TBoxes$, and they have an implicit graph-like hierarchy defined by the subsumption relationship.
 
-An $\mathcal{EL}$ $Tbox$ consists of GCIs (we can transform all definition formulas to GCIs), that can be seen as nodes and edges. A GCI can be thought of as a directed edge between two nodes representing concepts on the two sides of the subsumption symbol ($\sqsubseteq$). So reasoning with $TBoxes$ is similar to reasoning with directed graphs. We can reduce $TBox$ reasoning problems to graph problems and use graph algorithms to solve them. The subsumption relationship that forms a $TBox$ seem to have an intuitive interpretation as a directed graph; and that's why we might use the word ``subsumption hierarchy'' later in this study to denote the relationship between concepts in the $TBox$.
+An $\mathcal{EL}$ \textit{TBox} consists of GCIs (we can transform all definition formulas to GCIs), that can be seen as nodes and edges. A GCI can be thought of as a directed edge between two nodes representing concepts on the two sides of the subsumption symbol ($\sqsubseteq$). So reasoning with $TBoxes$ is similar to reasoning with directed graphs. That motivated the idea of reducing the problem of kernel contraction of a \textit{TBox} to a graph problem and using a graph algorithm to solve it. The subsumption relationship that forms a \textit{TBox} seem to have an intuitive interpretation as a directed graph; and that's why we use the word ``hierarchy'' to denote the relationship between concepts in the \textit{TBox}.
 
 The $\mathcal{EL}$ subsumption algorithm described in \cite{small} uses a graph approach, perhaps because it is intuitive to think of $TBoxes$ as graphs. A lot of work has been done in the area of Graph Theory, which makes it easy to use the already existing algorithms to solve some graph problems. Also, graphs are easy to imagine and work with. 
 
-Our goal is to reduce the kernel contraction problem to a graph problem, and, using some efficient graph algorithms to perform kernel contraction. The algorithm we build here starts by transforming the $TBox$ into a graph. Then, it generates all kernels by finding all paths that imply the formula we are contracting. After that, it removes one formula from each kernel by removing an edge from each path, since paths here represent kernels (this will all be explained shortly). Finally it transforms the graph back into a $TBox$. 
+Our goal is to reduce the kernel contraction problem to a graph problem, and use some efficient graph algorithms to perform kernel contraction. The algorithm we build here starts by transforming the \textit{TBox} into a graph. Then, it generates all kernels by finding all paths that imply the formula we are contracting. After that, it removes one formula from each kernel by removing an edge from each path, since paths here represent kernels (this will all be explained shortly). Finally it transforms the graph back into a \textit{TBox}. 
 
-We will start by describing the algorithm in details, and then explain each of its main steps. 
+We will start by describing the algorithm in detail, and then explain each of its main steps. 
 
 \subsubsection{Main algorithm}
 %Every GCI of the form $C \sqsubseteq D \sqcap E$ can be decomposed into two GCIs: $C \sqsubseteq D$ and $C \sqsubseteq E$, where $C$, $D$ and $E$ are arbitrary concept expressions. 
-Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$, and a GCI $\mathbb{A}$ (where $\mathbb{A}$ is in the form of $C \sqsubseteq D$, such that $C$ and $D$ are arbitrary concept expressions), we contract $\mathcal{T}$ by $A$ using Algorithm \ref{GraphContract}:
+Given an $\mathcal{EL}$ \textit{TBox} $\mathcal{T}$, and a GCI $\mathbb{A}$ (where $\mathbb{A}$ is in the form of $C \sqsubseteq D$, such that $C$ and $D$ are arbitrary concept expressions), we contract $\mathcal{T}$ by $A$ using Algorithm \ref{GraphContract}:
 
 
 \begin{algorithm}
@@ -350,20 +343,30 @@ Given an $\mathcal{EL}$ $TBox$ $\mathcal{T}$, and a GCI $\mathbb{A}$ (where $\ma
 \end{algorithmic}
 \end{algorithm}
 
-The complete function in step 2 uses the $\mathcal{EL}$ subsumption algorithm to compute all subsumptions of $\mathcal{T}$. All the subsumptions computed are added to $\mathcal{T}$. The subsumption algorithm proceeds in four steps:\cite{new}
+The complete() function in step 2 uses the $\mathcal{EL}$ subsumption algorithm to compute all subsumptions of $\mathcal{T}$. The subsumption algorithm implicitly computes all subsumptions in the process of checking whether a subsumption holds or not. So, we use that algorithm to compute all subsumptions, and then add an extra step of explicitly adding all subsumptions to $\mathcal{T}$. The subsumption algorithm proceeds in four steps:\cite{new}
 \begin{enumerate}
-\item Normalize the $TBox$.
-\item Translate the normalized $TBox$ into a graph.
+\item Normalize the \textit{TBox}.
+\item Translate the normalized \textit{TBox} into a graph.
 \item Complete the graph using completion rules.
 \item Read off the subsumption relationship from the normalized graph.
 \end{enumerate}
-The algorithm is explained in full details in \cite{new}. We now need to explain the transformation of the $TBox$ $\mathcal{T}$ into a graph.
+The fourth step is originally meant to examine the graph to determine whether a given subsumption holds or not. We use this step now to add each subsumption on the graph to the \textit{TBox} $\mathcal{T}$. Here is an example of how this step works. Given the \textit{TBox}:
+\begin{center} 
+$\mathcal{T} = \{Human \sqsubseteq Mammal, Mammal \sqsubseteq Animal\}$, 
+\end{center}
+the new $\mathcal{T}$ after adding all subsumptions would be: 
+\begin{center}
+$\{Human \sqsubseteq Human$, $Human \sqsubseteq Mammal$, $Human \sqsubseteq Animal$, $Mammal \sqsubseteq Mammal$, $Mammal \sqsubseteq Animal$, $Animal \sqsubseteq Animal\}$. 
+\end{center}
+The new \textit{TBox} contains a lot of unneeded GCIs. This can be avoided by adding a small step to the subsumption algorithm in \cite{small}, such that after completing the subsumption graph using the completion rules, we can remove all subsumptions of the form $X \sqsubseteq X$ (e.g. $Human \sqsubseteq Human$).
 
-\subsubsection{Transforming the $TBox$ into a graph}
-Assuming the $TBox$ $\mathcal{T}$ contains GCIs of the form $C \sqsubseteq D$ (where $D$ is an arbitrary concept, and $C$ is a concept expression of the form $c_1 \sqcap ... \sqcap c_n$ such that $n \geq 1$) , we construct a graph $graph=(V, E)$, where $V$ is a set of nodes and $E$ is a set of directed edges. Starting with an empty $V$ and $E$, for every GCI $C \sqsubseteq D$, add $C$ and $D$ to $V$, and add $(C, D)$ to $E$. This way every $v \in V$ represents a concept expression, and every pair $(C, D) \in E$ represents the subsumption relation $C \sqsubseteq D$.
+The subsumption algorithm is explained in full details in \cite{new}. We now need to explain the transformation of the \textit{TBox} $\mathcal{T}$ into a graph.
+
+\subsubsection{Transforming the \textit{TBox} into a graph}
+Assuming the \textit{TBox} $\mathcal{T}$ contains GCIs of the form $C \sqsubseteq D$ (where $D$ is an arbitrary concept, and $C$ is a concept expression of the form $c_1 \sqcap ... \sqcap c_n$ such that $n \geq 1$) , we construct a graph $graph=(V, E)$, where $V$ is a set of nodes and $E$ is a set of directed edges. Starting with an empty $V$ and $E$, for every GCI $C \sqsubseteq D$, add $C$ and $D$ to $V$, and add $(C, D)$ to $E$. This way every $v \in V$ represents a concept expression, and every pair $(C, D) \in E$ represents the subsumption relation $C \sqsubseteq D$.
 
 \begin{algorithm}
-\caption{Transforming a $TBox$ to a graph}
+\caption{Transforming a \textit{TBox} to a graph}
 \label{Transformation}
 \begin{algorithmic}[1]
 \Function {transform}{$ \mathcal{T} $}
@@ -377,22 +380,11 @@ Assuming the $TBox$ $\mathcal{T}$ contains GCIs of the form $C \sqsubseteq D$ (w
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Transformation analysis}
-It is worth mentioning that even though subsumption can be decided in polynomial time with respect to the size of the $TBox$ (using the algorithm in \cite{small}), computing all subsumptions can be exponential in the number of concepts. For example, with:
-\begin{center} 
-$\mathcal{T} = \{Human \sqsubseteq Mammal, Mammal \sqsubseteq Animal\}$, 
-\end{center}
-the new $\mathcal{T}$ after adding all subsumptions would be: 
-\begin{center}
-$\{Human \sqsubseteq Human$, $Human \sqsubseteq Mammal$, $Human \sqsubseteq Animal$, $Mammal \sqsubseteq Mammal$, $Mammal \sqsubseteq Animal$, $Animal \sqsubseteq Animal\}$. 
-\end{center}
-The new $TBox$ contains a lot of unneeded GCIs. This can be avoided by adding a small step to the subsumption algorithm in \cite{small}, such that after completing the subsumption graph using the completion rules, we can remove all subsumptions of the form $X \sqsubseteq X$ (e.g. $Human \sqsubseteq Human$); also we need to remove all subsumptions $C \sqsubseteq D$ if $C \sqsubseteq X$ and $X \sqsubseteq D$ (e.g. exclude $Human \sqsubseteq Animal$ if $Human \sqsubseteq Mammal$, and $Mammal \sqsubseteq Animal$ are in the $TBox$) are already there.
-
-Now we have a graph $graph$ that represents the $TBox$ $\mathcal{T}$. The next step is to compute the paths (using getPaths() function) from $C$ to $D$ (where $C$ and $D$ are graph nodes) using depth-first search. Obviously, computing the paths using depth-first search can take polynomial time. For simplicity, we assume the $TBox$ is acyclic. This means we don't allow the following situation:
+Now we have a graph $graph$ that represents the \textit{TBox} $\mathcal{T}$. The next step is to compute the paths (using getPaths() function) from $C$ to $D$ (where $C$ and $D$ are graph nodes) using depth-first search. Obviously, computing the paths using depth-first search can take polynomial time. For simplicity, we assume the \textit{TBox} is acyclic. This means we don't allow the following situation:
 \begin{center}
 $\lbrace C \sqsubseteq D , D \sqsubseteq E , E \sqsubseteq C \rbrace$.
 \end{center}
-Thus, the graph must be acyclic too. The algorithm can still be generalized to account for cycles. Computing all paths can be done as in Algorithm \ref{GetPaths}.
+Thus, the graph must be acyclic too. The algorithm can be generalized to account for cycles. Computing all paths can be done as in Algorithm \ref{GetPaths}.
 
 \begin{algorithm}
 \caption{Computing all paths between two nodes}
@@ -425,10 +417,10 @@ Thus, the graph must be acyclic too. The algorithm can still be generalized to a
 \end{algorithmic}
 \end{algorithm}
 
-This can also be done if the graph contains cycles. It would require using a more complicated algorithm that keeps track of the number of edges and the nodes visited during execution. Finding paths in cyclic graphs in explained in details in \cite{alg}.
+This can also be done if the graph contains cycles. It would require using a more complicated algorithm that keeps track of the number of edges and the nodes visited during execution. Finding paths in cyclic graphs is explained in detail in \cite{alg}.
 
 \subsubsection{Graph kernel contraction}
-The function cutPath is the contraction function. Every path from $C$ to $D$ is actually a subsumption path that entails $C \sqsubseteq D$. Removing an edge from such path would break the subsumption between $C$ and $D$ through this path. So, in order to contract $C \sqsubseteq D$ it is enough to remove one edge from each of the paths from $C$ to $D$; as each path represents a \textit{kernel} of $C \sqsubseteq D$ and breaking them is sufficient to give up the subsumption. 
+The function cutPath() is the incision function. Every path from $C$ to $D$ is actually a subsumption path that entails $C \sqsubseteq D$. Removing an edge from such path would break the subsumption between $C$ and $D$ through this path. So, in order to contract $C \sqsubseteq D$ it is enough to remove one edge from each of the paths from $C$ to $D$; as each path represents a \textit{kernel} of $C \sqsubseteq D$ and breaking them is sufficient to give up the subsumption. 
 
 So, a simple and very easy implementation (though inefficient) for the contraction function is to go over the set of paths, and remove a random edge from every path. Suppose that the graph in Figure \ref{ex1} is interpreted as C is the most specific concept that is subsumed by A ($C \sqsubseteq A$), and as we climb the graph up, the concepts get more general. Here there are four C-D paths: (C, X, Z, A, E, D), (C, X, Z, A, F, D), (C, Y, Z, A, E, D), and (C, Y, Z, A, F, D). A function that removes random edges from each path might remove (C, X), (Y, Z), (E, D), and (F, D), which will actually remove the subsumption between C and D. However, it would be better (in terms of minimal change) to remove only (Z, A), which will also guarantee that subsumption between C and D is removed.
 
@@ -439,7 +431,7 @@ So, a simple and very easy implementation (though inefficient) for the contracti
 \label{ex1}
 \end{figure}
 
-Sometimes we prefer to remove GCIs that involve most specific concepts during contraction (this will be discussed in the coming chapter). To contract such GCIs, we can just remove, from each $C-D$ path, the edges going into $C$. In Figure \ref{ex1}, it would mean removing two edges: (C, X) and (C, Y). But removing such edges does not guarantee the minimum change. So we might end up having to choose which strategy is more preferred: minimal change or change with most specific concepts. The minimal hitting set approach that was mentioned earlier might not always satisfy specificity. So the user might have to choose which one to apply first, and which one to use as a tie breaker.
+Sometimes we prefer to remove GCIs that involve most specific concepts during contraction (this will be discussed in Chapter \ref{heuristics}). To contract such GCIs, we can just remove, from each $C-D$ path, the edges going into $C$. In Figure \ref{ex1}, it would mean removing two edges: (C, X) and (C, Y). But removing such edges does not guarantee the minimum change. So we might end up having to choose which strategy is more preferred: minimal change or change with most specific concepts. The minimal hitting set approach that was mentioned earlier might not always satisfy specificity. So the user might have to choose which one to apply first, and which one to use as a tie breaker.
 
 Removing the edges that involve nodes representing most specific concepts is straightforward; remove the edges that go into the most specific concept's node (C in our example). But it is not clear if one chooses to remove the least number of edges, instead, how this can be done. For this, we introduce an approach that uses the Minimum Cut algorithm to determine the minimum number of edges that need to be removed and identify them.
 
@@ -452,9 +444,9 @@ As explained in \cite{alg}, the network flow problem is the problem of computing
 \item Capacity function $C:E \rightarrow \mathbb{N}$ representing the maximum capacity of each edge.
 \end{itemize}
 
-To contract $C \sqsubseteq D$ given the $TBox$ graph $G$, we choose $C$ to be the source, $D$ to be the sink, and we assume that the capacities of all edges are the same, equal to 1. The algorithm will find the maximum flow from $C$ to $D$, which is equal to the capacity of the minimum cut (the sum of capacities of the cut edges); we can then extract the edges that form that minimum cut and remove them.
+To contract $C \sqsubseteq D$ given the \textit{TBox} graph $G$, we choose $C$ to be the source, $D$ to be the sink, and we assume that the capacities of all edges are the same, equal to 1. The algorithm will find the maximum flow from $C$ to $D$, which is equal to the capacity of the minimum cut (the sum of capacities of the cut edges); we can then extract the edges that form that minimum cut and remove them.
 
-The approach of removing the minimum cut edges of the graph is equivalent to the approach of removing the minimal hitting set formulas of the kernels. The minimal hitting set is the set containing the minimum number of elements that hit all sets, while the minimum cut of the graph is the minimum number of edges (since they all have the same capacity) that cover all paths from $C$ to $D$ (where edges represent GCIs of the $TBox$ and paths represent kernels.) So using the minimum cut approach should guarantee the minimum change for kernel contraction, as the minimal hitting set approach does.
+The approach of removing the minimum cut edges of the graph is equivalent to the approach of removing the minimum hitting set formulas of the kernels. The minimum hitting set is the smallest set containing the minimum number of elements that hit all sets, while the minimum cut of the graph is the minimum number of edges (since they all have the same capacity) that cover all paths from $C$ to $D$ (where edges represent GCIs of the \textit{TBox} and paths represent kernels.) So using the minimum cut approach should guarantee the minimum change for kernel contraction, as the minimum hitting set approach does.
 
 Assuming we have a function ``Ford-Fulkerson(graph, s, t)'' that computes the maximum flow in the network (or graph) from source node ``s'' to a sink  ``t'' with edge-capacities ``1'', and returns the set of edges of the minimum cut, we can modify the contraction algorithm to adopt the minimum cut approach as in Algorithm \ref{GraphContract-modified}.
 
@@ -474,16 +466,16 @@ Assuming we have a function ``Ford-Fulkerson(graph, s, t)'' that computes the ma
 \end{algorithmic}
 \end{algorithm}
 
-For special cases such as contracting $C \sqsubseteq D1 \sqcap D2$, it is sufficient to contract $C \sqsubseteq D1$ first, and then contract $C \sqsubseteq D2$. But since the graph is already normalized (using complete() function), rules of the form $C \sqsubseteq D1 \sqcap D2$ are already broken down into two: $C \sqsubseteq D1$, and $C \sqsubseteq D2$. Therefore, the conjunction $\sqcap$ would only appear on the left hand side of a GCI in a normalized $TBox$ (e.g. $A1 \sqcap A2 \sqsubseteq B$). In that case, for contracting $A1 \sqcap A2 \sqsubseteq B$, there will be a node $A1 \sqcap A2$, which we will use as a source node; the sink would be the node representing $B$. 
+For special cases such as contracting $C \sqsubseteq D1 \sqcap D2$, it is sufficient to contract $C \sqsubseteq D1$ first, and then contract $C \sqsubseteq D2$. But since the graph is already normalized (using complete() function), rules of the form $C \sqsubseteq D1 \sqcap D2$ are already broken down into two: $C \sqsubseteq D1$, and $C \sqsubseteq D2$. Therefore, the conjunction $\sqcap$ would only appear on the left hand side of a GCI in a normalized \textit{TBox} (e.g. $A1 \sqcap A2 \sqsubseteq B$). In that case, for contracting $A1 \sqcap A2 \sqsubseteq B$, there will be a node $A1 \sqcap A2$, which we will use as a source node; the sink would be the node representing $B$. 
 
 As in \cite{alg}, the minimum cut algorithm runs in polynomial time. So using it in the contraction algorithm will not have a significant effect on the complexity of the main algorithm (will not elevate the complexity from being polynomial to being exponential). 
 
 In some applications, the decision about which strategy to follow for choosing the edges to remove might vary depending on the situation. So the user can be asked in such case about which strategy to follow -- specificity or minimality. 
 
-The last step of the algorithm is to transform the graph back to $\mathcal{EL}$. This can be done as follows: starting with an empty $TBox$ $\mathcal{T'}$, for every edge $(X, Y)$, add $X \sqsubseteq Y$ to $\mathcal{T'}$. The resulting $TBox$ would be the result of contracting $\mathcal{T}$ by $\mathbb{A}$. This is shown in Algorithm \ref{DeTransform}.
+The last step of the algorithm is to transform the graph back to $\mathcal{EL}$. This can be done as follows: starting with an empty \textit{TBox} $\mathcal{T'}$, for every edge $(X, Y)$, add $X \sqsubseteq Y$ to $\mathcal{T'}$. The resulting \textit{TBox} would be the result of contracting $\mathcal{T}$ by $\mathbb{A}$. This is shown in Algorithm \ref{DeTransform}.
 
 \begin{algorithm}
-\caption{Transforming a graph back to a $TBox$}
+\caption{Transforming a graph back to a \textit{TBox}}
 \label{DeTransform}
 \begin{algorithmic}[1]
 \Function {de-transform}{graph}
@@ -497,7 +489,7 @@ The last step of the algorithm is to transform the graph back to $\mathcal{EL}$.
 \end{algorithmic}
 \end{algorithm}
 
-Since the running time of every step of the contraction algorithm starting from ``transform($ \mathcal{T} $)'' until the last step is polynomial in the size of the $TBox$, the complexity of the algorithm will depend on the complexity of the first step (the complete() function). If building the subsumption hierarchy by generating all subsumptions of an $\mathcal{EL}$ $TBox$ can be done in polynomial time, then the contraction algorithm will in turn take polynomial time. But if generating all subsumptions takes exponential time, then the algorithm will take exponential running time as well.
+Since the running time of every step of the contraction algorithm starting from ``transform($ \mathcal{T} $)'' until the last step is polynomial in the size of the \textit{TBox}, the complexity of the algorithm will depend on the complexity of the first step (the complete() function). If building the subsumption hierarchy by generating all subsumptions of an $\mathcal{EL}$ \textit{TBox} can be done in polynomial time, then the contraction algorithm will in turn take polynomial time. But if generating all subsumptions takes exponential time, then the algorithm will take exponential running time as well.
 
 \subsubsection{A Sample Run}
 Suppose we have a TBox $\mathcal{T}$:
@@ -509,7 +501,7 @@ which implies $A \sqsubseteq C$. Trying to contract $\mathcal{T}$ by $A \sqsubse
 \item complete($\mathcal{T}$). 
 The TBox is already normalized. Translating it into a graph and applying the completion rules will introduce $A \sqsubseteq C$ and will be added explicitly to the TBox.
 \item transform($\mathcal{T}$).
-After transforming the TBox into a graph, it will look like the graph in Figure \ref{fig:abc-kb}.
+After transforming the TBox into a graph, it will look like the graph in Figure \ref{fig:abc-kb} (Assuming we remove the redundant subsumptions, such as $A \sqsubseteq A$).
 
 \begin{figure}
 \centering
@@ -535,7 +527,7 @@ $\mathcal{T} = \lbrace B \sqsubseteq C \rbrace$.
 
 
 \subsubsection{The limitations of the algorithm}
-The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) might introduces further complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
+The previous example shows how the algorithm succeeds in finding the set of kernels by finding the paths from the source to the sink (where source and sink represent the two sides of the GCI that we need to remove). The example we will discuss now shows how the conjunction symbol ($\sqcap$) might introduce further complexity that the algorithm will not overcome. Given the TBox $\mathcal{T}$:
 \begin{center}
 $\mathcal{T} = \lbrace A \sqsubseteq B, A \sqsubseteq C, B \sqcap C \sqsubseteq D \rbrace$
 \end{center}
@@ -562,7 +554,7 @@ After transforming the TBox into a graph, it will look like the graph in Figure 
 \label{fig:abcbc-kb}
 \end{figure}
 
-\item getPaths(graph, $A$, $D$) will get all paths between $A$ and $D$. There is only one such path, which is $A -- B \sqcap C -- D$. So removing one of these two edges is the only possible outcomes of the algorithm.
+\item getPaths(graph, $A$, $D$) will get all paths between $A$ and $D$. There is only one such path, which is $A - B \sqcap C - D$. So removing one of these two edges is the only possible outcome of the algorithm.
 \end{enumerate}
 
 This last step is where the algorithm fails. It finds only one of the kernels because it does not recognize that the two parallel edges from $A$ to $B$ and $C$ actually form another kernel. This is because a kernel in our graph approach can only be represented as a path. The conjunction symbol $\sqcap$ has a different meaning, and is not analogous to the path notion. However, the algorithm worked with the previous example because the GCI we tried to remove was the result of applying the transitivity property of the subsumption symbol ($\sqsubseteq$) to two other GCIs and they together were represented by a path in the graph representation.
@@ -577,7 +569,7 @@ $A \sqsubseteq \exists r.C$
 \end{center}
 The graph approach will not get the kernels of that expression using the getPaths() function. So, it will also fail. But this is only because of the subsumption of $B$ by $C$, where $B$ is included in the role expression $\exists r.B$. If the existential quantification symbol is used without changing the symbols involved in the roles (such as $B$), the algorithm will work fine, as it will only be depending on the subsumption relations between concept expressions.
 
-So it seems that the limitations of this algorithm are only due to the difference between the inference using paths between nodes and inference the introduces conjunction or existential quantification. However, the algorithm does not always fail when $\sqcap$ or $\exists$ is involved. In Figure \ref{fig:abc-kb}, if we replace B by (X $\sqcap$ Y), or by  ($\exists r.$B), the algorithm will succeed. That is because the nodes do not change after the inference; all that is added by the subsumption algorithm are new edges. 
+So it seems that the limitations of this algorithm are only due to the difference between the inference using paths and the inference using conjunction or existential quantification. However, the algorithm does not always fail when $\sqcap$ or $\exists$ is involved. In Figure \ref{fig:abc-kb}, if we replace B by (X $\sqcap$ Y), or by  ($\exists r.$B), the algorithm will succeed. That is because the nodes do not change after the inference; all that is added by the subsumption algorithm are new edges. 
 
 
 \subsubsection{Analysis of the graph algorithm}
@@ -586,7 +578,7 @@ The analysis we refer to here is with respect to rationality. It is important to
 \begin{description}
 \item[Success] If $\alpha \notin Cn(\emptyset)$, then $\alpha \notin Cn(A \div \alpha)$.
 \end{description}
-Since according to the definitions of kernels, each kernel is one way to imply $\alpha$, and since we are incising all kernels (all paths), then the new set cannot not imply $\alpha$. So this postulate is satisfied.
+Since according to the definitions of kernels, each kernel is one way to imply $\alpha$, and since we are incising all kernels (all paths), then the new set cannot imply $\alpha$ (except in the cases that the algorithm cannot solve). So this postulate is satisfied.
 
 \begin{description}
 \item[Inclusion] $A \div \alpha \subseteq A$.
@@ -596,7 +588,7 @@ Since we are not adding any extra beliefs, and assuming $A$ is the normalized ve
 \begin{description}
 \item[Core-retainment] If $\beta \in A$ and $\beta \notin A \div \alpha$, then there is a set $A'$ such that $A' \subseteq A$ and that $\alpha \notin Cn(A')$ but $\alpha \in Cn(A' \cup \{ \beta \})$.
 \end{description}
-This postulate is also satisfied because we are only removing beliefs that contribute to the contracted belief, as the minimum cut actually represents the smallest set of sentences that can be removed to contract the knowledge by $\alpha$ (\textit{minimum change}).
+This postulate is also satisfied because we are only removing beliefs that contribute to the contracted belief, as the minimum cut actually represents the smallest set of sentences that can be removed to contract the knowledge by $\alpha$ (\textit{minimum change}). So, if a belief $\beta$ doesn't contribute to making $A$ imply $\alpha$, then $\beta$ will not be part of any kernel (path), and hence will not be possible to remove.
 
 \begin{description}
 \item[Uniformity] If it holds for all subsets $A'$ of $A$ that $\alpha \in Cn(A')$ if and only if $\beta \in Cn(A')$, then $A \div \alpha = A \div \beta$.
@@ -614,13 +606,13 @@ Computing kernels using the graph approach finds all kernels by performing depth
 
 
 \subsection{What incision function to use?}
-If we care about selecting minimum number of beliefs to remove, then there are two incision approaches we discussed so far:
+If we care about selecting the minimum number of beliefs to remove, then there are two incision approaches we discussed so far:
 \begin{enumerate}
 \item The minimum hitting set algorithm.
 \item The minimum cut algorithm for the network flow problem.
 \end{enumerate}
-The minimum hitting set problem is NP-hard. However, the algorithm we discussed in this study is a relatively efficient approximation algorithm. However, in cases where the minimum cut approach can be used, the minimum cut algorithm is probably the best and most efficient. The algorithm works by finding the max flow possible through the network build from the TBox, and then uses it to find the minimum cut.
+The minimum hitting set problem is NP-hard. However, the algorithm we discussed in this study is a relatively efficient algorithm. However, in cases where the minimum cut approach can be used, the minimum cut algorithm is probably the best and most efficient. The algorithm works by finding the max flow possible through the network build from the TBox, and then uses it to find the minimum cut.
 
-The Ford-Fulkerson maximum flow algorithm typically takes $O(E \cdot F)$ steps to find the maximum flow, where $E$ is the number of edges and and $F$ is the value of the maximum flow. The value of $F$ is upper bounded by the the sum of all capacities, i.e. the maximum flow can never be greater than the sum of capacities of all edges. Since all edges in our approach has capacity 1, $F$ cannot exceed $E$. So the complexity of the algorithm can be reformulated as $O(E^2)$. After finding the maximum flow, we can find the minimum cut in $O(E)$. So the overall complexity of the algorithm is $O(E^2)$. Ford-Fulkerson algorithm is not polynomial-time, in general, because it depends on the value of the maximum flow, which is dependent on the capacities. There are other algorithms that are proved to be polynomial-time in general, such as the one introduced in \cite{preflow}. However, the application of Ford-Fulkerson algorithm here is always polynomial-time, because the capacities are all 1 which makes the maximum flow a polynomial function of the number of edges.
+The Ford-Fulkerson maximum flow algorithm takes $O(E \cdot F)$ steps to find the maximum flow, where $E$ is the number of edges and and $F$ is the value of the maximum flow. The value of $F$ is upper bounded by the the sum of all capacities, i.e. the maximum flow can never be greater than the sum of capacities of all edges. Since all edges in our approach has capacity 1, $F$ cannot exceed $E$. So the complexity of the algorithm can be reformulated as $O(E^2)$. After finding the maximum flow, we can find the minimum cut in $O(E)$. So the overall complexity of the algorithm is $O(E^2)$. The Ford-Fulkerson algorithm is not polynomial-time, in general, because it depends on the value of the maximum flow, which is dependent on the capacities. There are other algorithms that are proved to be polynomial-time in general, such as the one introduced in \cite{preflow}. However, the application of Ford-Fulkerson algorithm here is always polynomial-time, because the capacities are all 1 which makes the maximum flow a polynomial function of the number of edges.
 
 In other cases where the graph approach is not applicable, the minimum hitting set algorithm is a good candidate. In the next chapter, we will also give some techniques for implementing the incision function. Some of them might be even more suitable than the minimum hitting set approach, depending on the domain and the preferences of the user.
