@@ -2,12 +2,12 @@
 \label{heuristics}
 In this study we care about approaching optimal contraction. In the context of contraction, we can define optimality to be removing the smallest number of beliefs, or removing beliefs that make more sense to be removed together. In the last chapter, we discussed contraction algorithms that attempt to achieve optimality by trying to remove the smallest number of beliefs in an attempt to adopt the concept of minimum change. However, we haven't considered the significance of the DL language or the subsumption hierarchy of $\mathcal{EL}$ in choosing the beliefs to be removed from a $TBox$. In this chapter, we look at heuristics that are motivated by the subsumption relationship between formulas. We will discuss ways of determining a preferred set of beliefs to be removed, based on the subsumption relationship of $\mathcal{EL}$ represented by the symbol $\sqsubseteq$. 
 
-According to \textit{localization} and \textit{specificity} heuristics\footnote{These heuristics will be explained shortly.}, the preference of removing a certain set of beliefs is not based on their count. We can say that it is ``semantically'' better to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. The semantics of DL language's logical connectives imply certain meanings to the knowledge expressed using it. Keeping such meaning in mind while contracting helps make a reasonable decision on what beliefs to be removed. For example, it is arguably better to remove beliefs about specific concepts than general ones. Localization and specificity, can be used as tie-breakers when we have multiple \textit{giveUpSets} of the same size and we need to select only one. They can also be used on their own regardless of the size of the \textit{giveUpSets}.
+According to \textit{localization} and \textit{specificity} heuristics\footnote{These heuristics will be explained shortly.}, the preference of removing a certain set of beliefs is not based on their count. We can say that it is ``semantically'' better to remove beliefs that are related than to remove unrelated beliefs; by ``semantically'' we mean according to the meaning of the language's logical connectives. The semantics of DL language's logical connectives imply certain meanings to the knowledge expressed using it. Keeping such meaning in mind while contracting helps make a reasonable decision on what beliefs to remove. For example, it is arguably better to remove beliefs about specific concepts than general ones. Localization and specificity can be used as tie-breakers when we have multiple giveUpSets of the same size and we need to select only one. They can also be used on their own regardless of the size of the giveUpSets.
 
 \section{Localization}
-Giving up beliefs about a certain concept means being in doubt of this concept. The more beliefs we remove, the more concepts we become in doubt of. This can lead us to considering removing beliefs about a certain concept rather than beliefs about many different concepts. As discussed in \cite{zwei}, it is more efficient to remove beliefs that share concepts or roles in a TBox as it means being in doubt of less number of concepts.
+Giving up beliefs about a certain concept means being in doubt of this concept. The more beliefs we remove, the more concepts we become in doubt of. This can lead us to considering removing beliefs about a certain concept rather than beliefs about many different concepts. As discussed in \cite{zwei}, it is more efficient to remove beliefs that share concepts or roles in a TBox as it means being in doubt of fewer concepts.
 
-This seems a reasonable approach as humans tend to deal with related beliefs than unrelated ones. If we try to revise our knowledge, we will probably find ourselves leaning towards focusing on beliefs that share common concepts. 
+This seems a reasonable approach as humans tend to deal with related beliefs more than unrelated ones. If we try to revise our knowledge, we will probably find ourselves leaning towards focusing on beliefs that share common concepts. 
 
 The following $\mathcal{EL}$ example:
 \begin{center}
@@ -27,13 +27,13 @@ and we can see that there are two (5)-kernels:
 
 So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we are in doubt of our knowledge of four concepts: $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, makes us in doubt only of our knowledge of only three concepts: $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
 
-Localization is implemented in \cite{zwei} using a graph-like approach. The algorithm operates by defining edge-like relationship between formulas and using graph connectivity and graph clustering rules to determine localized sets. 
+Localization is implemented in \cite{zwei} using a graph-like approach. The algorithm operates by defining an edge-like relationship between formulas and using graph connectivity and graph clustering rules to determine localized sets. 
 
-For every two GCIs $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an edge between them if they share a concept or role.
+For every two GCIs $\mathbb{X}$ and $\mathbb{Y}$, we say that there is an undirected edge between them if they share a concept or role.
 After applying that, we will end up with a graph-like structure, where some GCIs of the knowledge base are connected by edges. The most basic path in a graph is an edge, but a path can be composed of more than one edge. Generally, a path is a sequence of edges.
 
 \begin{defn}(Conncected GCIs)
-Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is a path from one of them to the other, i.e. if there is a sequence of edges and GCIs $\mathbb{A}e_1G_1e_2 ... G_{n-1}e_n\mathbb{B}$, where $G_i$ is a GCI, $e_i$ is an edge, every triple $G_ie_{i+1}G_{i+1}$ means $G_i$ and $G_{i+1}$ are connected by an edge, and $n \geq 0$.
+Two GCIs $\mathbb{A}$ and $\mathbb{B}$ are connected if and only if there is an undirected path from one of them to the other, i.e. if there is a sequence of edges and GCIs $\mathbb{A}e_1G_1e_2 ... G_{n-1}e_n\mathbb{B}$, where $G_i$ is a GCI, $e_i$ is an edge, every triple $G_ie_{i+1}G_{i+1}$ means $G_i$ and $G_{i+1}$ are connected by an edge, and $n \geq 0$.
 \end{defn}
 
 In the last $\mathcal{EL}$ example, we can remove one of the following sets to contract (5):
@@ -42,11 +42,11 @@ In the last $\mathcal{EL}$ example, we can remove one of the following sets to c
 \item \{1, 4\}. (b)
 \end{itemize}
 
-There are more possible \textit{giveUpSets}, but (a) and (b) are sufficient to show how the definition of connected GCIs can be applied. 
+There are more possible giveUpSets, but (a) and (b) are sufficient to show how the definition of connected GCIs can be applied. 
 
-For the set (a), there is an edge between (1) and (3) because they share the same concept \textit{AspergillusFumigatus}. So, according to the definition, (1) and (3) are connected.
+For the set (a), there is an edge (hence, a path) between (1) and (3) because they share the same concept \textit{AspergillusFumigatus}. So, according to the definition, (1) and (3) are connected.
 
-For the set (b), there is no edge between (1) and (4) because they don't share any concept or role. So according to the definition, (1) and (4) are not connected.
+For the set (b), there is no path between (1) and (4) because they don't share any concept or role. So according to the definition, (1) and (4) are not connected.
 
 \begin{defn}(Clusters)
 A GCI $\mathbb{X}$ belongs to a cluster $\mathfrak{C}$ if and only if $\mathbb{X}$ is connected to every GCI in $\mathfrak{C}$.
@@ -54,9 +54,9 @@ A GCI $\mathbb{X}$ belongs to a cluster $\mathfrak{C}$ if and only if $\mathbb{X
 
 Thus, according to the definitions, the set (a) has only one cluster, as (1) and (3) are connected and belong to the same cluster. However, the set (b) has two clusters, because (1) and (4) are not connected in (b), so they belong to two different clusters.
 
-The algorithm uses the notion of clusters to identify the best \textit{giveUpSet}. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the \textit{giveUpSet}. If a \textit{giveUpSet} contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the more clusters there is in a set the more sparse the graph is, hence the less localized the contraction is. 
+The algorithm uses the notion of clusters to identify the best giveUpSet. A GCI belong to a cluster if it shares concepts or roles with other GCIs in the giveUpSet. If a giveUpSet contains a lower number of clusters than another set, then it is better to remove it during contraction. This is because the more clusters there is in a set the more sparse the graph is, hence the less localized the contraction is. 
 
-The algorithm works on each possible \textit{giveUpSet} separately. It builds the graph-like relation between formulas in the set according to the definitions we gave. It is important that the algorithm computes the connectivity in each set separately, because two formulas might have a path between them in one set but not the other; so they would be considered connected in a set and disconnected in the other. The algorithm then counts the number of clusters. It does that for all the sets, then chooses the set with least number of clusters to be removed.
+The algorithm works on each possible giveUpSet separately. It builds the graph-like relation between formulas in the set according to the definitions we gave. It is important that the algorithm computes the connectivity in each set separately, because two formulas might have a path between them in one set but not the other; so they would be considered connected in a set and disconnected in the other. The algorithm then counts the number of clusters. It does that for all the sets, then chooses the set with least number of clusters to be removed.
 
 \begin{algorithm}
 \caption{Computing localized hit}
@@ -64,16 +64,16 @@ The algorithm works on each possible \textit{giveUpSet} separately. It builds th
 \begin{algorithmic}[1]
 \State // Compute the number of clusters in each set and choose the least
 \Function{getLocalizedHit}{giveUpSets}
-\State $setWithLeastClusters = null$
-\State $smallestNumber = \infty$
-\For{$giveUpSet \in giveUpSets$}
-\State $numOfClusters = getNumberOfClusters(giveUpSet)$
-\If{$numOfClusters < smallestNumber$}
-\State $setWithLeastClusters = giveUpSet$
-\State $smallestNumber = numOfClusters$
+\State setWithLeastClusters $= null$
+\State smallestNumber $= \infty$
+\For{giveUpSet $\in$ giveUpSets}
+\State numOfClusters $=$ getNumberOfClusters(giveUpSet)
+\If{numOfClusters $<$ smallestNumber}
+\State setWithLeastClusters $=$ giveUpSet
+\State smallestNumber $=$ numOfClusters
 \EndIf
 \EndFor
-\State \Return $setWithLeastClusters$
+\State \Return setWithLeastClusters
 \EndFunction
 \end{algorithmic}
 
@@ -81,29 +81,29 @@ The algorithm works on each possible \textit{giveUpSet} separately. It builds th
 \begin{algorithmic}[1]
 \State // Compute the number of clusters
 \Function{getNumberOfClusters}{giveUpSet}
-\For{$i=1$ to $size(giveUpSet)$}
-\State $label[i]=i$
+\For{$i=1$ to size(giveUpSet)}
+\State label$[i]=i$
 \EndFor
-\For{$i=1$ to $size(giveUpSet)$}
-\State $cluster[i]=0$
+\For{$i=1$ to size(giveUpSet)}
+\State cluster$[i]=0$
 \EndFor
 \State // Label connected nodes (beliefs) similarly
-\For{$i=1$ to $size(giveUpSet)$}
-\For{$j=i+1$ to $size(giveUpSet)$}
+\For{$i=1$ to size(giveUpSet)}
+\For{$j=i+1$ to size(giveUpSet)}
 \If{giveUpSet[i] and giveUpSet[j] are connected}
-\State $label[j] = label[i]$
+\State label$[j] = $label$[i]$
 \EndIf
 \EndFor
 \EndFor
 \State // Mark clusters based on used labels. Each label now represents a cluster
-\For{$i=1$ to $size(giveUpSet)$}
-\State $cluster[label[i]]=1$
+\For{$i=1$ to size(giveUpSet)}
+\State cluster$[$label$[i]]=1$
 \EndFor
 \State // Calculate the number of clusters by counting the used labels
-\For{$i=1$ to $size(giveUpSet)$}
-\State $numberOfClusters = numberOfClusters + cluster[i]$
+\For{$i=1$ to size(giveUpSet)}
+\State numberOfClusters $=$ numberOfClusters $+$ cluster$[i]$
 \EndFor 
-\State \Return $numberOfClusters$
+\State \Return numberOfClusters
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -123,9 +123,10 @@ $Vertebrate \sqsubseteq Animal$
 \label{fig:AnimalKernel}
 \end{figure}
 
-\newpage
 
+\begin{flushleft}
 which implicitly entails
+\end{flushleft}
 \begin{center}
 $Lion \sqsubseteq Animal$
 \end{center}
