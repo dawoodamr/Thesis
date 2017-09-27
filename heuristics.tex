@@ -11,21 +11,21 @@ This seems a reasonable approach as humans tend to deal with related beliefs mor
 
 The following $\mathcal{EL}$ example:
 \begin{center}
-(1) $AspergillusFumigatus \sqsubseteq Multicellular $ \\
-(2) $Multicellular \sqsubseteq NotBacteria$ \\
-(3) $AspergillusFumigatus \sqsubseteq Eukaryotes$ \\
-(4) $Eukaryotes \sqsubseteq NotBacteria$ 
+(1) \textit{AspergillusFumigatus} $\sqsubseteq$ \textit{Multicellular} \\
+(2) \textit{Multicellular} $\sqsubseteq$ \textit{NotBacteria} \\
+(3) \textit{AspergillusFumigatus} $\sqsubseteq$ \textit{Eukaryotes} \\
+(4) \textit{Eukaryotes} $\sqsubseteq$ \textit{NotBacteria} 
 \end{center}
 implies:
 \begin{center}
-(5) $AspergillusFumigatus \sqsubseteq NotBacteria$,
+(5) \textit{AspergillusFumigatus} $\sqsubseteq$ \textit{NotBacteria},
 \end{center}
 and we can see that there are two (5)-kernels:
 \begin{center}
 \{1, 2\} and \{3, 4\}
 \end{center}
 
-So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we are in doubt of our knowledge of four concepts: $AspergillusFumigatus$, $Multicellular$ beings, $Eukaryotes$, and beings that are $NotBacteria$, while removing (1) and (3), on the other hand, makes us in doubt only of our knowledge of only three concepts: $AspergillusFumigatus$, $Multicellular$ beings, and $Eukaryotes$. Not only that, but removing (1) and (3) actually means that our knowledge of $AspergillusFumigatus$ is wrong; Our knowledge of $Multicellular$ beings and $Eukaryotes$ is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are $NotBacteria$.
+So, to contract the knowledge base by (5), we need to remove a belief from each kernel. However, removing (1) and (4) seems unreasonable because it means that we are in doubt of our knowledge of four concepts: \textit{AspergillusFumigatus}, \textit{Multicellular} beings, \textit{Eukaryotes}, and beings that are \textit{NotBacteria}, while removing (1) and (3), on the other hand, makes us in doubt only of our knowledge of only three concepts: \textit{AspergillusFumigatus}, \textit{Multicellular} beings, and \textit{Eukaryotes}. Not only that, but removing (1) and (3) actually means that our knowledge of \textit{AspergillusFumigatus} is wrong; Our knowledge of \textit{Multicellular} beings and \textit{Eukaryotes} is not necessarily false. Same with removing (2) and (4), we suspect the soundness of our beliefs about beings that are \textit{NotBacteria}.
 
 Localization is implemented in \cite{zwei} using a graph-like approach. The algorithm operates by defining an edge-like relationship between formulas and using graph connectivity and graph clustering rules to determine localized sets. 
 
@@ -67,7 +67,7 @@ The algorithm works on each possible giveUpSet separately. It builds the graph-l
 \State setWithLeastClusters $= null$
 \State smallestNumber $= \infty$
 \For{giveUpSet $\in$ giveUpSets}
-\State numOfClusters $=$ getNumberOfClusters(giveUpSet)
+\State numOfClusters $=$ \Call{getNumberOfClusters}{giveUpSet}
 \If{numOfClusters $<$ smallestNumber}
 \State setWithLeastClusters $=$ giveUpSet
 \State smallestNumber $=$ numOfClusters
@@ -115,9 +115,9 @@ Algorithm \ref{LocalizeContraction} selects the giveUpSet with least number of c
 The subsumption hierarchy enforced by the subsumption relation in $\mathcal{EL}$ categorizes concepts into different levels of generality and specificity. Consider the kernel:% in Figure \ref{fig:AnimalKernel},
 \begin{figure}[h]
 \begin{center}
-$Lion \sqsubseteq Mammal$\\
-$Mammal \sqsubseteq Vertebrate$\\
-$Vertebrate \sqsubseteq Animal$
+\textit{Lion} $\sqsubseteq$ \textit{Mammal}\\
+\textit{Mammal} $\sqsubseteq$ \textit{Vertebrate}\\
+\textit{Vertebrate} $\sqsubseteq$ \textit{Animal}
 \end{center}
 \caption{Simple Animal kernel}
 \label{fig:AnimalKernel}
@@ -128,9 +128,9 @@ $Vertebrate \sqsubseteq Animal$
 which implicitly entails
 \end{flushleft}
 \begin{center}
-$Lion \sqsubseteq Animal$
+\textit{Lion} $\sqsubseteq$ \textit{Animal}
 \end{center}
-And suppose we would like to contract the $TBox$ by $Lion \sqsubseteq Animal$. We have three options: we can remove $Lion \sqsubseteq Mammal$, $Mammal \sqsubseteq Vertebrate$, or $Vertebrate \sqsubseteq Animal$. Removing any of the three GCIs would guarantee minimum change. We can say that $Lion$ is more specific than $Mammal$ and $Mammal$ is more specific than $Vertebrate$. Removing $Lion \sqsubseteq Mammal$, in this case, is more reasonable than removing $Vertebrate \sqsubseteq Animal$, because $Lion \sqsubseteq Mammal$ involves concepts that are more specific than the ones involved in $Vertebrate \sqsubseteq Animal$. Removing $Vertebrate \sqsubseteq Animal$ may affect more concepts in the subsumption hierarchy (in worst case) than those affected by removing $Lion \sqsubseteq Mammal$. This means that removing $Vertebrate \sqsubseteq Animal$ means that all individuals that are $Vertebrates$ are no longer believed to be $Animals$, while removing $Lion \sqsubseteq Mammal$ only affects a subset of $Vertebrates$ which is $Lions$.
+And suppose we would like to contract the $TBox$ by \textit{Lion} $\sqsubseteq$ \textit{Animal}. We have three options: we can remove \textit{Lion} $\sqsubseteq$ \textit{Mammal}, \textit{Mammal} $\sqsubseteq$ \textit{Vertebrate}, or \textit{Vertebrate} $\sqsubseteq$ \textit{Animal}. Removing any of the three GCIs would guarantee minimum change. We can say that \textit{Lion} is more specific than \textit{Mammal} and \textit{Mammal} is more specific than \textit{Vertebrate}. Removing \textit{Lion} $\sqsubseteq$ \textit{Mammal}, in this case, is more reasonable than removing \textit{Vertebrate} $\sqsubseteq$ \textit{Animal}, because \textit{Lion } $\sqsubseteq$ \textit{Mammal} involves concepts that are more specific than the ones involved in \textit{Vertebrate} $\sqsubseteq$ \textit{Animal}. Removing \textit{Vertebrate} $\sqsubseteq$ \textit{Animal} might affect more concepts in the subsumption hierarchy (in worst case) than those affected by removing \textit{Lion} $\sqsubseteq$ \textit{Mammal}. This means that removing \textit{Vertebrate} $\sqsubseteq$ \textit{Animal} means that all individuals that are \textit{Vertebrates} are no longer believed to be \textit{Animals}, while removing \textit{Lion} $\sqsubseteq$ \textit{Mammal} only affects a subset of \textit{Vertebrates} which is \textit{Lions}.
 
 So, it is preferable to remove GCIs that involve specific concepts rather than removing GCIs that involve more general ones. To account for specificity, we assign a label to each of the concepts representing its level in the subsumption hierarchy, where levels increase with generality. And during contraction, we consider contracting GCIs that involve concepts at lower level (more specific) before considering GCIs that involve concepts at higher level.
 
@@ -160,9 +160,9 @@ The approach we follow in this study for adopting the preference of removing sen
 Now we can compute the weights for the last TBox:
 
 \begin{itemize}
-\item $Lion \sqsubseteq Mammal$ has weight = 0
-\item $Mammal \sqsubseteq Vertebrate$ has weight = 1
-\item $Vertebrate \sqsubseteq Animal$ has weight = 2
+\item \textit{Lion} $\sqsubseteq$ \textit{Mammal} has weight = 0
+\item \textit{Mammal} $\sqsubseteq$ \textit{Vertebrate} has weight = 1
+\item \textit{Vertebrate} $\sqsubseteq$ \textit{Animal} has weight = 2
 \end{itemize}
 
 The algorithm we introduce now removes kernels that contain GCIs involving most specific concepts by first computing the weights of every kernel based on the weights of the GCIs inside it. Following Definition \ref{defn:Parent-Child}, we start the algorithm by building the $children$ labels for all the concepts in the $TBox$ that we will use to assign weights to the GCIs. Given a $TBox$ $\mathcal{T}$, the algorithm proceeds as in Algorithm \ref{GraphBuild}.
@@ -188,7 +188,7 @@ Now we have a graph composed of nodes and their $child$ relationship; the nodes 
 \begin{algorithmic}[1]
 \Function {assignWeights}{T}
 \For{every $A \sqsubseteq B \in T$}
-\State $weight(A \sqsubseteq B) = GetWeight(A \sqsubseteq B)$
+\State $weight(A \sqsubseteq B) = $ \Call{getWeight}{$A \sqsubseteq B$}
 \EndFor
 \EndFunction
 \end{algorithmic}
@@ -204,7 +204,7 @@ Now we have a graph composed of nodes and their $child$ relationship; the nodes 
 \Return 0
 \Else
 \State
-\Return $1 + GetMaxWeight(X)$
+\Return $1 + $ \Call{getMaxWeight}{$X$}
 \EndIf
 \EndFunction
 \end{algorithmic}
@@ -213,7 +213,7 @@ Now we have a graph composed of nodes and their $child$ relationship; the nodes 
 \Function {getMaxWeight}{X}
 \State max = -- 1
 \For{every Z in children(X)}
-\State w = GetWeight($Z \sqsubseteq X$)
+\State w = \Call{getWeight}{$Z \sqsubseteq X$}
 \If{ w $>$ max}
 \State max = w
 \EndIf
@@ -268,4 +268,4 @@ Now the CUT method in Algorithm \ref{MainAlgorithm} can be re-implemented using 
 
 The contraction algorithms in this version guarantees the minimality, then specificity, of the removed beliefs. It guarantees the minimality by reducing the selection of beliefs from the kernelset to the minimal hitting set problem. The better the performance and the optimality of the hitting set algorithms, the efficient and minimal the contraction algorithm is. If the minimal set algorithm produces more than one solution of the same size, the specificity heuristic is used as a tie-breaker. It selects the solution with more specific beliefs to be removed.
 
-The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(n \cdot l)$, where $n$ is the size of the TBox $\mathcal{T}$ and $l$ is the depth of the subsumption graph. Since the largest value for $l$ is $n$, we can consider the worst-case time complexity to be $O(n^2)$. The algorithm works as depth-first search because of the recursive call in $getWeight$ function. The $graphBuild$ function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $\mathcal{T}$. Finally, the $getMostSpecificHit$ function takes $O(n \cdot m)$ steps in the worst case, where $n$ is the size of the TBox $\mathcal{T}$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
+The time complexity of Algorithm \ref{AssignWeights} is polynomial. The worst-case time complexity is $O(n \cdot l)$, where $n$ is the size of the TBox $\mathcal{T}$ and $l$ is the depth of the subsumption graph. Since the largest value for $l$ is $n$, we can consider the worst-case time complexity to be $O(n^2)$. The algorithm works as depth-first search because of the recursive call in getWeight function. The graphBuild function takes $O(n)$ steps to build the parent-child relationship graph, where $n$ is the size of the TBox $\mathcal{T}$. Finally, the getMostSpecificHit function takes $O(n \cdot m)$ steps in the worst case, where $n$ is the size of the TBox $\mathcal{T}$, and $m$ is the number of kernel sets. So the contraction algorithm takes polynomial time if the minimum hitting set algorithm runs in polynomial time. But, if the minimum hitting set algorithm is not polynomial-time, then the contraction algorithm will not be. Thus, it is safe to say that the time complexity of the contraction algorithm is lower-bounded by the time complexity of the minimum hitting set algorithm's time complexity.
